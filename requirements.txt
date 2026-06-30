@@ -1,0 +1,5 @@
+tradingagents @ git+https://github.com/TauricResearch/TradingAgents.git@main
+fastapi
+uvicorn
+jinja2
+python-dotenv

@@ -1,0 +1,1476 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TradingAgents — منصة التحليل الذكي بالذكاء الاصطناعي</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   TradingAgents — Professional Trading Dashboard
+   ============================================================ */
+:root {
+  --bg-deep: #060b14;
+  --bg-primary: #0a0f1a;
+  --bg-surface: #0e1420;
+  --bg-card: #131b2b;
+  --bg-card-hover: #1a2337;
+  --border: #1e2a42;
+  --border-light: #2a3a58;
+  --accent-primary: #00d4aa;
+  --accent-secondary: #f59e0b;
+  --accent-danger: #ef4444;
+  --accent-info: #3b82f6;
+  --accent-purple: #8b5cf6;
+  --accent-cyan: #06b6d4;
+  --accent-gold: #d4af37;
+  --text-primary: #f0f2f5;
+  --text-secondary: #8892a8;
+  --text-muted: #5a6580;
+  --success: #10b981;
+  --danger: #ef4444;
+  --warning: #f59e0b;
+  --info: #3b82f6;
+  --grad-buy: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
+  --grad-sell: linear-gradient(135deg, #ef4444 0%, #f97316 100%);
+  --grad-hold: linear-gradient(135deg, #f59e0b 0%, #eab308 100%);
+  --grad-primary: linear-gradient(135deg, #00d4aa 0%, #06b6d4 100%);
+  --grad-purple: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.3);
+  --shadow-md: 0 4px 20px rgba(0,0,0,0.4);
+  --shadow-glow: 0 0 30px rgba(0,212,170,0.15);
+  --radius: 12px;
+  --radius-sm: 8px;
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { 
+  font-family: 'Cairo', -apple-system, sans-serif; 
+  background: var(--bg-deep); 
+  color: var(--text-primary); 
+  min-height: 100vh; 
+  overflow-x: hidden; 
+  line-height: 1.6;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-deep); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--border-light); }
+
+/* Animations */
+@keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeInLeft { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes fadeInRight { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes pulse-glow { 0%,100%{box-shadow:0 0 0 0 rgba(0,212,170,0.4)} 50%{box-shadow:0 0 20px 5px rgba(0,212,170,0.1)} }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes ticker { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+@keyframes shimmer { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
+@keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes scaleIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+
+.animate-fadeIn { animation: fadeIn 0.6s ease forwards; }
+.animate-slideUp { animation: slideUp 0.5s ease forwards; }
+.animate-scaleIn { animation: scaleIn 0.4s ease forwards; }
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+.header {
+  background: linear-gradient(180deg, var(--bg-surface) 0%, rgba(14,20,32,0.95) 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(20px);
+}
+
+.logo { display: flex; align-items: center; gap: 12px; cursor: pointer; transition: var(--transition); }
+.logo:hover { transform: scale(1.02); }
+.logo-icon { 
+  width: 40px; height: 40px; 
+  background: var(--grad-primary); 
+  border-radius: 10px; 
+  display: flex; align-items: center; justify-content: center; 
+  font-size: 20px; font-weight: 900; color: #fff;
+  box-shadow: 0 4px 15px rgba(0,212,170,0.3);
+  position: relative;
+  overflow: hidden;
+}
+.logo-icon::after {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(135deg, transparent 40%, rgba(255,255,255,0.2) 50%, transparent 60%);
+  animation: shimmer 3s infinite;
+}
+.logo h1 { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; }
+.logo h1 span { color: var(--accent-primary); }
+.logo-tagline { font-size: 10px; color: var(--text-muted); font-weight: 500; margin-top: -2px; }
+
+.header-right { display: flex; align-items: center; gap: 16px; }
+.market-status { 
+  display: flex; align-items: center; gap: 6px; 
+  font-size: 11px; color: var(--success); 
+  background: rgba(16,185,129,0.1); 
+  padding: 4px 12px; border-radius: 20px; border: 1px solid rgba(16,185,129,0.2);
+}
+.market-status::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--success); animation: pulse-glow 2s infinite; }
+.header-badge { font-size: 11px; color: var(--text-muted); background: var(--bg-card); padding: 5px 14px; border-radius: 20px; border: 1px solid var(--border); font-weight: 600; }
+
+/* ============================================================
+   NEWS TICKER
+   ============================================================ */
+.news-ticker {
+  background: var(--bg-primary);
+  border-bottom: 1px solid var(--border);
+  overflow: hidden;
+  height: 32px;
+  display: flex;
+  align-items: center;
+}
+.ticker-label {
+  background: var(--grad-primary);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 0 14px;
+  height: 100%;
+  display: flex; align-items: center;
+  flex-shrink: 0;
+  z-index: 2;
+}
+.ticker-wrap { flex: 1; overflow: hidden; position: relative; }
+.ticker-content {
+  display: flex;
+  gap: 48px;
+  animation: ticker 60s linear infinite;
+  white-space: nowrap;
+  padding: 0 20px;
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+.ticker-item { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+.ticker-item .symbol { color: var(--accent-primary); font-weight: 700; font-family: 'JetBrains Mono', monospace; }
+.ticker-item .change-up { color: var(--success); }
+.ticker-item .change-down { color: var(--danger); }
+
+/* ============================================================
+   CONTROLS BAR
+   ============================================================ */
+.controls-bar {
+  background: var(--bg-surface);
+  padding: 16px 24px;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--border);
+}
+
+.control-group { display: flex; flex-direction: column; gap: 5px; }
+.control-group label { font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+
+.select-styled {
+  padding: 9px 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-primary);
+  font-size: 13px;
+  font-family: inherit;
+  cursor: pointer;
+  min-width: 180px;
+  transition: var(--transition);
+  outline: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238892a8' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: left 12px center;
+  padding-left: 32px;
+}
+.select-styled:focus { border-color: var(--accent-primary); box-shadow: 0 0 0 3px rgba(0,212,170,0.1); }
+.select-styled:hover { border-color: var(--border-light); background: var(--bg-card-hover); }
+
+/* Search input for pairs */
+.search-pairs {
+  padding: 9px 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-primary);
+  font-size: 13px;
+  font-family: inherit;
+  min-width: 200px;
+  transition: var(--transition);
+  outline: none;
+}
+.search-pairs:focus { border-color: var(--accent-primary); box-shadow: 0 0 0 3px rgba(0,212,170,0.1); }
+.search-pairs::placeholder { color: var(--text-muted); }
+
+.btn-analyze {
+  padding: 10px 32px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--grad-primary);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: var(--transition);
+  box-shadow: 0 4px 20px rgba(0,212,170,0.25);
+  display: flex; align-items: center; gap: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 17px;
+}
+.btn-analyze:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,212,170,0.35); }
+.btn-analyze:active { transform: translateY(0); }
+.btn-analyze:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+.btn-analyze .spinner { width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.8s linear infinite; display: none; }
+.btn-analyze.loading .spinner { display: inline-block; }
+.btn-analyze.loading .btn-text { display: none; }
+
+.status-badge {
+  font-size: 11px; padding: 5px 14px; border-radius: 20px;
+  background: var(--bg-card); color: var(--text-muted);
+  border: 1px solid var(--border); transition: var(--transition);
+  font-weight: 600; margin-top: 17px;
+}
+.status-badge.running { background: rgba(0,212,170,0.1); color: var(--accent-primary); border-color: var(--accent-primary); animation: pulse-glow 2s infinite; }
+.status-badge.done { background: rgba(16,185,129,0.1); color: var(--success); border-color: var(--success); }
+.status-badge.error { background: rgba(239,68,68,0.1); color: var(--danger); border-color: var(--danger); }
+
+/* ============================================================
+   AGENT SELECTOR
+   ============================================================ */
+.agent-selector {
+  background: var(--bg-primary);
+  border-bottom: 1px solid var(--border);
+  padding: 16px 24px;
+}
+.agent-selector-title {
+  font-size: 12px; color: var(--text-muted); font-weight: 600;
+  text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px;
+}
+.agent-cards {
+  display: flex; gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+.agent-cards::-webkit-scrollbar { height: 4px; }
+.agent-cards::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+.agent-card-select {
+  flex-shrink: 0;
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex; align-items: center; gap: 10px;
+  min-width: 180px;
+}
+.agent-card-select:hover { border-color: var(--border-light); background: var(--bg-card-hover); transform: translateY(-1px); }
+.agent-card-select.active {
+  border-color: var(--accent-primary);
+  background: linear-gradient(135deg, rgba(0,212,170,0.1) 0%, rgba(6,182,212,0.05) 100%);
+  box-shadow: 0 0 20px rgba(0,212,170,0.1);
+}
+.agent-card-select .agent-icon { 
+  width: 36px; height: 36px; border-radius: 10px; 
+  display: flex; align-items: center; justify-content: center; 
+  font-size: 16px; background: rgba(255,255,255,0.05);
+}
+.agent-card-select .agent-info { display: flex; flex-direction: column; gap: 2px; }
+.agent-card-select .agent-name { font-size: 13px; font-weight: 700; color: var(--text-primary); }
+.agent-card-select .agent-desc { font-size: 10px; color: var(--text-muted); }
+.agent-card-select .agent-check {
+  margin-right: auto; width: 18px; height: 18px; border-radius: 50%;
+  border: 2px solid var(--border); display: flex; align-items: center; justify-content: center;
+  transition: var(--transition); font-size: 10px; color: transparent;
+}
+.agent-card-select.active .agent-check { background: var(--accent-primary); border-color: var(--accent-primary); color: #fff; }
+
+/* ============================================================
+   MAIN LAYOUT
+   ============================================================ */
+.main-layout { display: flex; height: calc(100vh - 64px - 32px - 73px - 89px); position: relative; }
+
+/* Left Panel — Results */
+.results-panel {
+  width: 460px; min-width: 360px; max-width: 520px;
+  background: var(--bg-surface);
+  border-left: 1px solid var(--border);
+  overflow-y: auto;
+  display: flex; flex-direction: column;
+  transition: var(--transition);
+}
+.results-panel.collapsed { width: 0; min-width: 0; overflow: hidden; border: none; }
+
+.panel-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  flex-shrink: 0;
+  background: linear-gradient(90deg, var(--bg-card) 0%, transparent 100%);
+}
+.panel-title { font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+.panel-title .icon { font-size: 16px; }
+.panel-actions { display: flex; gap: 6px; }
+.panel-btn {
+  width: 28px; height: 28px; border-radius: 6px;
+  border: 1px solid var(--border); background: var(--bg-card);
+  color: var(--text-secondary); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; transition: var(--transition);
+}
+.panel-btn:hover { background: var(--bg-card-hover); color: var(--text-primary); border-color: var(--border-light); }
+
+.panel-body { flex: 1; overflow-y: auto; padding: 16px; }
+
+/* Right Panel — Chart */
+.chart-panel { flex: 1; min-width: 0; position: relative; height: 100%; background: var(--bg-deep); }
+#tvchart { width: 100%; height: 100%; position: absolute; top: 0; left: 0; }
+.chart-loading {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  color: var(--text-secondary); gap: 16px; z-index: 10;
+}
+.chart-loading .spinner-large {
+  width: 40px; height: 40px;
+  border: 3px solid var(--border); border-top-color: var(--accent-primary);
+  border-radius: 50%; animation: spin 1s linear infinite;
+}
+
+/* ============================================================
+   PLACEHOLDER
+   ============================================================ */
+.placeholder-view {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  height: 100%; color: var(--text-muted); text-align: center; gap: 20px;
+  padding: 40px 20px;
+}
+.placeholder-icon {
+  width: 80px; height: 80px;
+  border: 2px dashed var(--border);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 32px;
+  animation: pulse-glow 3s infinite;
+}
+.placeholder-title { font-size: 16px; font-weight: 700; color: var(--text-secondary); }
+.placeholder-desc { font-size: 13px; color: var(--text-muted); max-width: 280px; line-height: 1.8; }
+
+/* ============================================================
+   PROGRESS VIEW
+   ============================================================ */
+.progress-view {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  height: 100%; padding: 40px 20px; text-align: center;
+}
+
+.progress-ring-container {
+  width: 140px; height: 140px;
+  position: relative; margin-bottom: 28px;
+}
+.progress-ring-container svg { transform: rotate(-90deg); width: 100%; height: 100%; }
+.progress-ring-container .bg { fill: none; stroke: var(--border); stroke-width: 5; }
+.progress-ring-container .fill {
+  fill: none; stroke: url(#progGrad); stroke-width: 5;
+  stroke-linecap: round; transition: stroke-dashoffset 1s ease;
+}
+.progress-ring-container .pct {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  font-size: 28px; font-weight: 800; color: var(--text-primary);
+  font-family: 'JetBrains Mono', monospace;
+}
+.progress-ring-container .pct-label {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, 14px);
+  font-size: 10px; color: var(--text-muted); font-weight: 600;
+}
+
+.progress-timer {
+  font-size: 36px; font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--text-primary); margin-bottom: 4px;
+  letter-spacing: 2px;
+}
+.progress-stage {
+  font-size: 16px; font-weight: 700; margin-bottom: 4px;
+  background: var(--grad-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.progress-sub { font-size: 12px; color: var(--text-muted); margin-bottom: 20px; }
+
+.progress-bar-outer {
+  width: 100%; max-width: 320px; height: 4px;
+  background: var(--border); border-radius: 2px; overflow: hidden; margin-bottom: 16px;
+}
+.progress-bar-inner {
+  height: 100%; background: var(--grad-primary); border-radius: 2px;
+  transition: width 0.5s ease; position: relative;
+}
+.progress-bar-inner::after {
+  content: ''; position: absolute; top: 0; right: 0; bottom: 0;
+  width: 40px; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3));
+  animation: shimmer 2s infinite;
+}
+
+.stage-track {
+  display: flex; gap: 8px; align-items: center;
+  justify-content: center; flex-wrap: wrap;
+}
+.stage-pill {
+  padding: 5px 12px; border-radius: 20px;
+  font-size: 10px; font-weight: 600;
+  background: var(--bg-card); border: 1px solid var(--border);
+  color: var(--text-muted); transition: var(--transition);
+}
+.stage-pill.active { background: rgba(0,212,170,0.1); border-color: var(--accent-primary); color: var(--accent-primary); box-shadow: 0 0 10px rgba(0,212,170,0.1); }
+.stage-pill.done { background: rgba(16,185,129,0.1); border-color: var(--success); color: var(--success); }
+
+/* Agent avatars in progress */
+.progress-agents {
+  display: flex; gap: -8px; margin-top: 24px; justify-content: center;
+}
+.progress-agent-avatar {
+  width: 36px; height: 36px; border-radius: 50%;
+  border: 2px solid var(--bg-surface);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; background: var(--bg-card);
+  margin-left: -8px; transition: var(--transition);
+  position: relative;
+}
+.progress-agent-avatar.active { border-color: var(--accent-primary); transform: scale(1.1); z-index: 1; box-shadow: 0 0 15px rgba(0,212,170,0.2); }
+.progress-agent-avatar.done { border-color: var(--success); opacity: 0.7; }
+
+/* ============================================================
+   RESULT CARDS
+   ============================================================ */
+.result-card {
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  margin-bottom: 12px;
+  overflow: hidden;
+  transition: var(--transition);
+  animation: fadeIn 0.5s ease forwards;
+}
+.result-card:hover { border-color: var(--border-light); transform: translateY(-1px); box-shadow: var(--shadow-sm); }
+.result-card.highlight { border-color: var(--accent-primary); box-shadow: var(--shadow-glow); }
+
+.result-card-header {
+  padding: 14px 16px;
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: var(--transition);
+}
+.result-card-header:hover { background: var(--bg-card-hover); }
+.result-card-header .left { display: flex; align-items: center; gap: 10px; }
+.result-card-header .icon {
+  width: 32px; height: 32px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; background: rgba(255,255,255,0.05);
+}
+.result-card-header .title { font-size: 13px; font-weight: 700; }
+.result-card-header .subtitle { font-size: 10px; color: var(--text-muted); }
+.result-card-header .toggle { font-size: 10px; color: var(--text-muted); transition: var(--transition); }
+.result-card.expanded .toggle { transform: rotate(180deg); }
+
+.result-card-body {
+  padding: 14px 16px;
+  font-size: 13px; line-height: 1.8; color: var(--text-secondary);
+  white-space: pre-wrap;
+  max-height: 0; overflow: hidden; transition: max-height 0.4s ease, padding 0.4s ease;
+}
+.result-card.expanded .result-card-body { max-height: 2000px; padding: 14px 16px; }
+.result-card-body p { margin-bottom: 8px; }
+.result-card-body p:last-child { margin-bottom: 0; }
+
+/* Decision Card */
+.decision-card {
+  background: linear-gradient(135deg, rgba(0,212,170,0.08) 0%, rgba(6,182,212,0.03) 100%);
+  border: 1px solid rgba(0,212,170,0.2);
+  border-radius: var(--radius);
+  padding: 20px;
+  text-align: center;
+  margin-bottom: 16px;
+  position: relative;
+  overflow: hidden;
+}
+.decision-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: var(--grad-primary);
+}
+.decision-emoji { font-size: 40px; margin-bottom: 8px; }
+.decision-text {
+  font-size: 28px; font-weight: 900; letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.decision-text.buy { color: var(--success); }
+.decision-text.sell { color: var(--danger); }
+.decision-text.hold { color: var(--warning); }
+.decision-sub {
+  font-size: 12px; color: var(--text-muted); margin-top: 6px;
+  font-weight: 500;
+}
+
+.confidence-meter {
+  margin-top: 12px;
+  display: flex; flex-direction: column; gap: 6px;
+}
+.confidence-label { font-size: 11px; color: var(--text-muted); font-weight: 600; }
+.confidence-track {
+  height: 8px; border-radius: 4px; background: var(--border); overflow: hidden;
+}
+.confidence-fill {
+  height: 100%; border-radius: 4px;
+  background: var(--grad-primary); transition: width 1s ease;
+  position: relative;
+}
+.confidence-fill::after {
+  content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 30px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3));
+}
+.confidence-value { font-size: 12px; color: var(--accent-primary); font-weight: 700; font-family: 'JetBrains Mono', monospace; }
+
+/* Entry Points Card */
+.entry-card {
+  background: linear-gradient(135deg, rgba(16,185,129,0.05) 0%, rgba(6,182,212,0.02) 100%);
+  border: 1px solid rgba(16,185,129,0.15);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 12px;
+}
+.entry-card-header { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+.entry-card-header .icon { font-size: 18px; }
+.entry-card-header .title { font-size: 14px; font-weight: 700; color: var(--success); }
+
+.entry-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 8px 0; border-bottom: 1px solid var(--border);
+}
+.entry-row:last-child { border-bottom: none; }
+.entry-label { font-size: 12px; color: var(--text-muted); }
+.entry-value { font-size: 14px; font-weight: 700; font-family: 'JetBrains Mono', monospace; color: var(--text-primary); }
+.entry-value.buy { color: var(--success); }
+.entry-value.sell { color: var(--danger); }
+
+/* Agent Report Cards */
+.agent-report-grid {
+  display: grid; gap: 10px;
+}
+
+.agent-report-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  padding: 14px;
+  transition: var(--transition);
+  animation: slideUp 0.4s ease forwards;
+}
+.agent-report-card:hover { border-color: var(--border-light); }
+.agent-report-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.agent-report-avatar {
+  width: 36px; height: 36px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+  position: relative;
+}
+.agent-report-avatar .status-dot {
+  position: absolute; bottom: -2px; right: -2px;
+  width: 10px; height: 10px; border-radius: 50%;
+  border: 2px solid var(--bg-card);
+}
+.agent-report-avatar .status-dot.active { background: var(--success); }
+.agent-report-name { font-size: 13px; font-weight: 700; }
+.agent-report-role { font-size: 10px; color: var(--text-muted); }
+.agent-report-body { font-size: 12px; line-height: 1.7; color: var(--text-secondary); white-space: pre-wrap; }
+
+/* Debate Section */
+.debate-section { margin-top: 12px; }
+.debate-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  padding: 14px;
+  margin-bottom: 10px;
+}
+.debate-header {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 10px;
+  padding-bottom: 10px; border-bottom: 1px solid var(--border);
+}
+.debate-avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; border: 2px solid var(--border);
+}
+.debate-name { font-size: 13px; font-weight: 700; }
+.debate-role { font-size: 10px; color: var(--text-muted); }
+.debate-body { font-size: 12px; line-height: 1.7; color: var(--text-secondary); white-space: pre-wrap; }
+
+.debate-bull .debate-avatar { border-color: var(--success); background: rgba(16,185,129,0.1); }
+.debate-bull .debate-name { color: var(--success); }
+.debate-bear .debate-avatar { border-color: var(--danger); background: rgba(239,68,68,0.1); }
+.debate-bear .debate-name { color: var(--danger); }
+.debate-judge .debate-avatar { border-color: var(--warning); background: rgba(245,158,11,0.1); }
+.debate-judge .debate-name { color: var(--warning); }
+
+/* Risk Section */
+.risk-conservative .debate-avatar { border-color: var(--info); background: rgba(59,130,246,0.1); }
+.risk-conservative .debate-name { color: var(--info); }
+.risk-neutral .debate-avatar { border-color: var(--accent-purple); background: rgba(139,92,246,0.1); }
+.risk-neutral .debate-name { color: var(--accent-purple); }
+.risk-aggressive .debate-avatar { border-color: var(--danger); background: rgba(239,68,68,0.1); }
+.risk-aggressive .debate-name { color: var(--danger); }
+
+/* ============================================================
+   MARKET SUMMARY BAR
+   ============================================================ */
+.market-summary {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px;
+  margin-bottom: 16px;
+}
+.market-summary-item {
+  background: var(--bg-card); border-radius: var(--radius-sm);
+  border: 1px solid var(--border); padding: 10px 12px;
+  text-align: center; transition: var(--transition);
+}
+.market-summary-item:hover { border-color: var(--border-light); }
+.market-summary-item .label { font-size: 10px; color: var(--text-muted); font-weight: 600; margin-bottom: 4px; }
+.market-summary-item .value { font-size: 16px; font-weight: 700; font-family: 'JetBrains Mono', monospace; }
+.market-summary-item .change { font-size: 11px; font-weight: 600; margin-top: 2px; }
+.change-up { color: var(--success); }
+.change-down { color: var(--danger); }
+
+/* ============================================================
+   TIMELINE / FOOTER
+   ============================================================ */
+.result-footer {
+  text-align: center; font-size: 11px; color: var(--text-muted);
+  margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap;
+}
+.result-footer .badge {
+  padding: 3px 10px; border-radius: 12px; background: var(--bg-card);
+  border: 1px solid var(--border); font-size: 10px; font-weight: 600;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 1024px) {
+  .main-layout { flex-direction: column; height: auto; }
+  .results-panel { width: 100%; max-width: none; min-width: auto; height: 50vh; border-left: none; border-bottom: 1px solid var(--border); }
+  .chart-panel { height: 50vh; }
+  .controls-bar { flex-direction: column; align-items: stretch; }
+  .agent-cards { flex-wrap: wrap; }
+}
+
+@media (max-width: 640px) {
+  .header { padding: 0 12px; height: 56px; }
+  .logo h1 { font-size: 16px; }
+  .controls-bar { padding: 12px; gap: 10px; }
+  .select-styled, .search-pairs { min-width: auto; width: 100%; }
+  .btn-analyze { width: 100%; justify-content: center; }
+  .results-panel { height: 60vh; }
+  .chart-panel { height: 40vh; }
+}
+
+/* ============================================================
+   TOOLTIP / UTILS
+   ============================================================ */
+.tooltip { position: relative; }
+.tooltip::after {
+  content: attr(data-tooltip); position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%);
+  background: var(--bg-card); color: var(--text-primary); padding: 6px 10px; border-radius: 6px;
+  font-size: 11px; white-space: nowrap; border: 1px solid var(--border);
+  box-shadow: var(--shadow-md); opacity: 0; pointer-events: none; transition: var(--transition);
+  margin-bottom: 6px; z-index: 1000;
+}
+.tooltip:hover::after { opacity: 1; }
+
+.glass {
+  background: rgba(19, 27, 43, 0.8);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+/* Collapse button for panel */
+.panel-collapse-btn {
+  position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+  width: 20px; height: 60px; background: var(--bg-card);
+  border: 1px solid var(--border); border-left: none;
+  border-radius: 0 8px 8px 0; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; color: var(--text-muted); z-index: 50;
+  transition: var(--transition);
+}
+.panel-collapse-btn:hover { background: var(--bg-card-hover); color: var(--text-primary); }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <linearGradient id="progGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00d4aa"/>
+      <stop offset="100%" stop-color="#06b6d4"/>
+    </linearGradient>
+  </defs>
+</svg>
+
+<!-- ============================================================ HEADER -->
+<header class="header">
+  <div class="logo" onclick="window.location.reload()">
+    <div class="logo-icon">TA</div>
+    <div>
+      <h1>Trading<span>Agents</span></h1>
+      <div class="logo-tagline">منصة التحليل الذكي بالذكاء الاصطناعي</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="market-status">السوق مفتوح</div>
+    <div class="header-badge">AI Multi-Agent</div>
+  </div>
+</header>
+
+<!-- ============================================================ NEWS TICKER -->
+<div class="news-ticker">
+  <div class="ticker-label">📡 الأسواق</div>
+  <div class="ticker-wrap">
+    <div class="ticker-content" id="tickerContent">
+      <span class="ticker-item"><span class="symbol">EUR/USD</span> <span class="change-up">▲ 0.15%</span></span>
+      <span class="ticker-item"><span class="symbol">GBP/USD</span> <span class="change-up">▲ 0.08%</span></span>
+      <span class="ticker-item"><span class="symbol">USD/JPY</span> <span class="change-down">▼ 0.22%</span></span>
+      <span class="ticker-item"><span class="symbol">XAU/USD</span> <span class="change-up">▲ 0.45%</span></span>
+      <span class="ticker-item"><span class="symbol">BTC/USD</span> <span class="change-up">▲ 1.20%</span></span>
+      <span class="ticker-item"><span class="symbol">ETH/USD</span> <span class="change-down">▼ 0.60%</span></span>
+      <span class="ticker-item"><span class="symbol">S&P 500</span> <span class="change-up">▲ 0.30%</span></span>
+      <span class="ticker-item"><span class="symbol">NASDAQ</span> <span class="change-up">▲ 0.55%</span></span>
+      <span class="ticker-item"><span class="symbol">Oil</span> <span class="change-down">▼ 0.12%</span></span>
+      <span class="ticker-item"><span class="symbol">AAPL</span> <span class="change-up">▲ 0.80%</span></span>
+      <span class="ticker-item"><span class="symbol">TSLA</span> <span class="change-down">▼ 1.10%</span></span>
+      <span class="ticker-item"><span class="symbol">NVDA</span> <span class="change-up">▲ 2.30%</span></span>
+      <!-- Duplicate for seamless loop -->
+      <span class="ticker-item"><span class="symbol">EUR/USD</span> <span class="change-up">▲ 0.15%</span></span>
+      <span class="ticker-item"><span class="symbol">GBP/USD</span> <span class="change-up">▲ 0.08%</span></span>
+      <span class="ticker-item"><span class="symbol">USD/JPY</span> <span class="change-down">▼ 0.22%</span></span>
+      <span class="ticker-item"><span class="symbol">XAU/USD</span> <span class="change-up">▲ 0.45%</span></span>
+      <span class="ticker-item"><span class="symbol">BTC/USD</span> <span class="change-up">▲ 1.20%</span></span>
+      <span class="ticker-item"><span class="symbol">ETH/USD</span> <span class="change-down">▼ 0.60%</span></span>
+      <span class="ticker-item"><span class="symbol">S&P 500</span> <span class="change-up">▲ 0.30%</span></span>
+      <span class="ticker-item"><span class="symbol">NASDAQ</span> <span class="change-up">▲ 0.55%</span></span>
+      <span class="ticker-item"><span class="symbol">Oil</span> <span class="change-down">▼ 0.12%</span></span>
+      <span class="ticker-item"><span class="symbol">AAPL</span> <span class="change-up">▲ 0.80%</span></span>
+      <span class="ticker-item"><span class="symbol">TSLA</span> <span class="change-down">▼ 1.10%</span></span>
+      <span class="ticker-item"><span class="symbol">NVDA</span> <span class="change-up">▲ 2.30%</span></span>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ CONTROLS -->
+<div class="controls-bar">
+  <div class="control-group">
+    <label>🔍 البحث عن زوج</label>
+    <input type="text" class="search-pairs" id="pairSearch" placeholder="ابحث باسم الزوج أو الرمز..." autocomplete="off">
+  </div>
+  <div class="control-group">
+    <label>📊 اختيار الزوج</label>
+    <select class="select-styled" id="tickerSelect"></select>
+  </div>
+  <div class="control-group">
+    <label>🤖 المزود الذكي</label>
+    <select class="select-styled" id="providerSelect">
+      <option value="deepseek">DeepSeek (عميق)</option>
+      <option value="groq">Groq (سريع)</option>
+      <option value="google">Google Gemini</option>
+      <option value="openai">OpenAI GPT</option>
+      <option value="ollama">Ollama محلي</option>
+    </select>
+  </div>
+  <button class="btn-analyze" id="analyzeBtn">
+    <span class="spinner"></span>
+    <span class="btn-text">🔍 تحليل شام</span>
+  </button>
+  <span id="statusBadge" class="status-badge">جاهز</span>
+</div>
+
+<!-- ============================================================ AGENT SELECTOR -->
+<div class="agent-selector">
+  <div class="agent-selector-title">اختر الوكلاء الذكيين للتحليل</div>
+  <div class="agent-cards" id="agentCards">
+    <div class="agent-card-select active" data-agent="all">
+      <div class="agent-icon" style="background:linear-gradient(135deg,rgba(0,212,170,0.2),rgba(6,182,212,0.1));color:#00d4aa">🤖</div>
+      <div class="agent-info">
+        <div class="agent-name">فريق كامل</div>
+        <div class="agent-desc">جميع المحللين</div>
+      </div>
+      <div class="agent-check">✓</div>
+    </div>
+    <div class="agent-card-select" data-agent="technical">
+      <div class="agent-icon" style="background:linear-gradient(135deg,rgba(59,130,246,0.2),rgba(139,92,246,0.1));color:#3b82f6">📊</div>
+      <div class="agent-info">
+        <div class="agent-name">المحلل الفني</div>
+        <div class="agent-desc">التحليل الفني والمؤشرات</div>
+      </div>
+      <div class="agent-check">✓</div>
+    </div>
+    <div class="agent-card-select" data-agent="sentiment">
+      <div class="agent-icon" style="background:linear-gradient(135deg,rgba(139,92,246,0.2),rgba(168,85,247,0.1));color:#8b5cf6">💬</div>
+      <div class="agent-info">
+        <div class="agent-name">محلل المعنويات</div>
+        <div class="agent-desc">تحليل المشاعر والاتجاهات</div>
+      </div>
+      <div class="agent-check">✓</div>
+    </div>
+    <div class="agent-card-select" data-agent="news">
+      <div class="agent-icon" style="background:linear-gradient(135deg,rgba(6,182,212,0.2),rgba(59,130,246,0.1));color:#06b6d4">📰</div>
+      <div class="agent-info">
+        <div class="agent-name">محلل الأخبار</div>
+        <div class="agent-desc">الأخبار الاقتصادية والأحداث</div>
+      </div>
+      <div class="agent-check">✓</div>
+    </div>
+    <div class="agent-card-select" data-agent="fundamental">
+      <div class="agent-icon" style="background:linear-gradient(135deg,rgba(16,185,129,0.2),rgba(6,182,212,0.1));color:#10b981">📋</div>
+      <div class="agent-info">
+        <div class="agent-name">المحلل الأساسي</div>
+        <div class="agent-desc">التحليل الأساسي والبيانات</div>
+      </div>
+      <div class="agent-check">✓</div>
+    </div>
+    <div class="agent-card-select" data-agent="risk">
+      <div class="agent-icon" style="background:linear-gradient(135deg,rgba(245,158,11,0.2),rgba(239,68,68,0.1));color:#f59e0b">🛡️</div>
+      <div class="agent-info">
+        <div class="agent-name">محلل المخاطر</div>
+        <div class="agent-desc">تقييم المخاطر والإدارة</div>
+      </div>
+      <div class="agent-check">✓</div>
+    </div>
+    <div class="agent-card-select" data-agent="debate">
+      <div class="agent-icon" style="background:linear-gradient(135deg,rgba(239,68,68,0.2),rgba(16,185,129,0.1));color:#ef4444">⚔️</div>
+      <div class="agent-info">
+        <div class="agent-name">مناقشة Bull vs Bear</div>
+        <div class="agent-desc">مناظرة الاتجاهات</div>
+      </div>
+      <div class="agent-check">✓</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ MAIN LAYOUT -->
+<div class="main-layout">
+  <div class="results-panel" id="resultsPanel">
+    <div class="panel-header">
+      <div class="panel-title"><span class="icon">📊</span> تقرير التحليل الشامل</div>
+      <div class="panel-actions">
+        <button class="panel-btn tooltip" data-tooltip="تصغير" onclick="togglePanel()">⏷</button>
+        <button class="panel-btn tooltip" data-tooltip="تحديث" onclick="location.reload()">↻</button>
+      </div>
+    </div>
+    <div class="panel-body" id="resultsContent">
+      <div class="placeholder-view">
+        <div class="placeholder-icon">📈</div>
+        <div class="placeholder-title">ابدأ التحليل الذكي</div>
+        <div class="placeholder-desc">اختر زوجاً أو سهماً من القائمة، ثم اختر الوكلاء الذكيين للتحليل، واضغط <strong style="color:var(--accent-primary)">تحليل شامل</strong></div>
+      </div>
+    </div>
+  </div>
+  <div class="chart-panel">
+    <div class="chart-loading" id="chartLoading">
+      <div class="spinner-large"></div>
+      <div>جاري تحميل الرسم البياني...</div>
+    </div>
+    <div id="tvchart"></div>
+  </div>
+</div>
+
+<!-- ============================================================ SCRIPTS -->
+<script src="https://s3.tradingview.com/tv.js"></script>
+<script>
+// ============================================================
+// DATA
+// ============================================================
+const STAGES = [
+  "جمع البيانات وتحليل السوق",
+  "تحليل الأخبار والمؤشرات",
+  "مناقشة فريق المحللين",
+  "تقييم المخاطر",
+  "اتخاذ القرار النهائي"
+];
+
+const AGENTS = {
+  all: { name: "فريق كامل", icon: "🤖", color: "#00d4aa" },
+  technical: { name: "المحلل الفني", icon: "📊", color: "#3b82f6" },
+  sentiment: { name: "محلل المعنويات", icon: "💬", color: "#8b5cf6" },
+  news: { name: "محلل الأخبار", icon: "📰", color: "#06b6d4" },
+  fundamental: { name: "المحلل الأساسي", icon: "📋", color: "#10b981" },
+  risk: { name: "محلل المخاطر", icon: "🛡️", color: "#f59e0b" },
+  debate: { name: "مناقشة Bull vs Bear", icon: "⚔️", color: "#ef4444" }
+};
+
+const PAIRS = [
+  // === FOREX MAJORS ===
+  { label: "EUR/USD", flag: "🇪🇺", tv: "FX:EURUSD", yahoo: "EURUSD=X", category: "forex" },
+  { label: "GBP/USD", flag: "🇬🇧", tv: "FX:GBPUSD", yahoo: "GBPUSD=X", category: "forex" },
+  { label: "USD/JPY", flag: "🇯🇵", tv: "FX:USDJPY", yahoo: "USDJPY=X", category: "forex" },
+  { label: "USD/CHF", flag: "🇨🇭", tv: "FX:USDCHF", yahoo: "USDCHF=X", category: "forex" },
+  { label: "AUD/USD", flag: "🇦🇺", tv: "FX:AUDUSD", yahoo: "AUDUSD=X", category: "forex" },
+  { label: "USD/CAD", flag: "🇨🇦", tv: "FX:USDCAD", yahoo: "USDCAD=X", category: "forex" },
+  { label: "NZD/USD", flag: "🇳🇿", tv: "FX:NZDUSD", yahoo: "NZDUSD=X", category: "forex" },
+  // === FOREX CROSSES ===
+  { label: "GBP/JPY", flag: "🇬🇧", tv: "FX:GBPJPY", yahoo: "GBPJPY=X", category: "forex" },
+  { label: "EUR/JPY", flag: "🇪🇺", tv: "FX:EURJPY", yahoo: "EURJPY=X", category: "forex" },
+  { label: "EUR/GBP", flag: "🇪🇺", tv: "FX:EURGBP", yahoo: "EURGBP=X", category: "forex" },
+  { label: "AUD/JPY", flag: "🇦🇺", tv: "FX:AUDJPY", yahoo: "AUDJPY=X", category: "forex" },
+  { label: "CHF/JPY", flag: "🇨🇭", tv: "FX:CHFJPY", yahoo: "CHFJPY=X", category: "forex" },
+  // === STOCKS ===
+  { label: "Apple (AAPL)", flag: "🍎", tv: "NASDAQ:AAPL", yahoo: "AAPL", category: "stock" },
+  { label: "Tesla (TSLA)", flag: "🚗", tv: "NASDAQ:TSLA", yahoo: "TSLA", category: "stock" },
+  { label: "NVIDIA (NVDA)", flag: "🟢", tv: "NASDAQ:NVDA", yahoo: "NVDA", category: "stock" },
+  { label: "Microsoft (MSFT)", flag: "🪟", tv: "NASDAQ:MSFT", yahoo: "MSFT", category: "stock" },
+  { label: "Amazon (AMZN)", flag: "📦", tv: "NASDAQ:AMZN", yahoo: "AMZN", category: "stock" },
+  { label: "Google (GOOGL)", flag: "🔵", tv: "NASDAQ:GOOGL", yahoo: "GOOGL", category: "stock" },
+  { label: "Meta (META)", flag: "👤", tv: "NASDAQ:META", yahoo: "META", category: "stock" },
+  { label: "Berkshire (BRK.B)", flag: "🏦", tv: "NYSE:BRK.B", yahoo: "BRK-B", category: "stock" },
+  { label: "JPMorgan (JPM)", flag: "💰", tv: "NYSE:JPM", yahoo: "JPM", category: "stock" },
+  // === INDICES ===
+  { label: "S&P 500", flag: "📈", tv: "FOREXCOM:SPX500", yahoo: "^GSPC", category: "index" },
+  { label: "NASDAQ 100", flag: "📊", tv: "NASDAQ:NDX", yahoo: "^IXIC", category: "index" },
+  { label: "Dow Jones", flag: "🏭", tv: "FOREXCOM:DJI", yahoo: "^DJI", category: "index" },
+  { label: "DAX 40", flag: "🇩🇪", tv: "XETR:DAX", yahoo: "^GDAXI", category: "index" },
+  { label: "FTSE 100", flag: "🇬🇧", tv: "FOREXCOM:UKX", yahoo: "^FTSE", category: "index" },
+  { label: "Nikkei 225", flag: "🇯🇵", tv: "TVC:NI225", yahoo: "^N225", category: "index" },
+  // === COMMODITIES ===
+  { label: "Gold (XAU/USD)", flag: "🥇", tv: "FOREXCOM:XAUUSD", yahoo: "GC=F", category: "commodity" },
+  { label: "Silver (XAG/USD)", flag: "🥈", tv: "FOREXCOM:XAGUSD", yahoo: "SI=F", category: "commodity" },
+  { label: "Crude Oil (WTI)", flag: "🛢️", tv: "FOREXCOM:USOIL", yahoo: "CL=F", category: "commodity" },
+  { label: "Brent Oil", flag: "⛽", tv: "FOREXCOM:UKOIL", yahoo: "BZ=F", category: "commodity" },
+  { label: "Natural Gas", flag: "🔥", tv: "FOREXCOM:NGAS", yahoo: "NG=F", category: "commodity" },
+  // === CRYPTO ===
+  { label: "Bitcoin (BTC/USD)", flag: "₿", tv: "COINBASE:BTCUSD", yahoo: "BTC-USD", category: "crypto" },
+  { label: "Ethereum (ETH/USD)", flag: "♦", tv: "COINBASE:ETHUSD", yahoo: "ETH-USD", category: "crypto" },
+  { label: "Solana (SOL/USD)", flag: "◎", tv: "COINBASE:SOLUSD", yahoo: "SOL-USD", category: "crypto" },
+  { label: "XRP (XRP/USD)", flag: "✦", tv: "COINBASE:XRPUSD", yahoo: "XRP-USD", category: "crypto" },
+  { label: "Dogecoin (DOGE/USD)", flag: "Ð", tv: "COINBASE:DOGEUSD", yahoo: "DOGE-USD", category: "crypto" },
+  { label: "Cardano (ADA/USD)", flag: "❖", tv: "COINBASE:ADAUSD", yahoo: "ADA-USD", category: "crypto" },
+  { label: "Polkadot (DOT/USD)", flag: "●", tv: "COINBASE:DOTUSD", yahoo: "DOT-USD", category: "crypto" },
+];
+
+// ============================================================
+// DOM ELEMENTS
+// ============================================================
+const tickerSelect = document.getElementById("tickerSelect");
+const pairSearch = document.getElementById("pairSearch");
+const analyzeBtn = document.getElementById("analyzeBtn");
+const statusBadge = document.getElementById("statusBadge");
+const resultsContent = document.getElementById("resultsContent");
+const resultsPanel = document.getElementById("resultsPanel");
+const chartLoading = document.getElementById("chartLoading");
+
+// ============================================================
+// POPULATE PAIRS DROPDOWN
+// ============================================================
+function populatePairs(filter = "") {
+  const currentVal = tickerSelect.value;
+  tickerSelect.innerHTML = "";
+  
+  const categories = {
+    forex: "🌐 العملات (Forex)",
+    stock: "🏢 الأسهم",
+    index: "📊 المؤشرات",
+    commodity: "🛢️ السلع",
+    crypto: "₿ العملات الرقمية"
+  };
+  
+  const filtered = PAIRS.filter(p => 
+    p.label.toLowerCase().includes(filter.toLowerCase()) ||
+    p.yahoo.toLowerCase().includes(filter.toLowerCase()) ||
+    p.tv.toLowerCase().includes(filter.toLowerCase())
+  );
+  
+  const grouped = {};
+  filtered.forEach(p => {
+    if (!grouped[p.category]) grouped[p.category] = [];
+    grouped[p.category].push(p);
+  });
+  
+  Object.entries(grouped).forEach(([cat, items]) => {
+    const optGroup = document.createElement("optgroup");
+    optGroup.label = categories[cat] || cat;
+    optGroup.style.color = "var(--text-muted)";
+    optGroup.style.fontSize = "11px";
+    optGroup.style.fontWeight = "700";
+    
+    items.forEach(p => {
+      const opt = document.createElement("option");
+      opt.value = p.yahoo;
+      opt.textContent = `${p.flag} ${p.label}`;
+      opt.dataset.tv = p.tv;
+      opt.dataset.category = p.category;
+      optGroup.appendChild(opt);
+    });
+    
+    tickerSelect.appendChild(optGroup);
+  });
+  
+  if (currentVal && Array.from(tickerSelect.options).some(o => o.value === currentVal)) {
+    tickerSelect.value = currentVal;
+  } else {
+    tickerSelect.value = "EURUSD=X";
+  }
+}
+
+populatePairs();
+
+// ============================================================
+// SEARCH PAIRS
+// ============================================================
+pairSearch.addEventListener("input", (e) => {
+  populatePairs(e.target.value);
+});
+
+// ============================================================
+// TRADINGVIEW CHART
+// ============================================================
+let tvWidget = null;
+const container = document.getElementById("tvchart");
+
+function initTradingView(sym) {
+  if (tvWidget) { tvWidget.remove(); tvWidget = null; }
+  chartLoading.style.display = "flex";
+  
+  if (!window.TradingView) {
+    chartLoading.innerHTML = `<div style="text-align:center;color:var(--text-muted)"><div style="font-size:32px;margin-bottom:12px">📉</div><div>TradingView غير متاح في منطقتك</div><div style="font-size:12px;margin-top:8px">حاول استخدام VPN</div></div>`;
+    return;
+  }
+  
+  setTimeout(() => {
+    chartLoading.style.display = "none";
+    try {
+      tvWidget = new TradingView.widget({
+        container_id: "tvchart",
+        symbol: sym,
+        interval: "D",
+        timezone: "Etc/UTC",
+        theme: "dark",
+        style: "1",
+        locale: "ar",
+        toolbar_bg: "#0a0f1a",
+        enable_publishing: false,
+        allow_symbol_change: true,
+        hide_side_toolbar: false,
+        width: "100%",
+        height: "100%",
+        studies: ["RSI@tv-basicstudies", "MASimple@tv-basicstudies"],
+        loading_screen: { backgroundColor: "#0a0f1a" },
+      });
+    } catch(e) {
+      container.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--danger);font-size:14px">❌ خطأ في تحميل الرسم البياني</div>`;
+    }
+  }, 300);
+}
+
+tickerSelect.addEventListener("change", () => {
+  const o = tickerSelect.options[tickerSelect.selectedIndex];
+  if (o?.dataset?.tv) initTradingView(o.dataset.tv);
+});
+
+setTimeout(() => initTradingView("FX:EURUSD"), 500);
+
+// ============================================================
+// AGENT SELECTOR
+// ============================================================
+let selectedAgents = ["all"];
+
+document.querySelectorAll(".agent-card-select").forEach(card => {
+  card.addEventListener("click", () => {
+    const agent = card.dataset.agent;
+    
+    if (agent === "all") {
+      selectedAgents = ["all"];
+      document.querySelectorAll(".agent-card-select").forEach(c => c.classList.remove("active"));
+      card.classList.add("active");
+    } else {
+      document.querySelector('[data-agent="all"]').classList.remove("active");
+      card.classList.toggle("active");
+      selectedAgents = Array.from(document.querySelectorAll(".agent-card-select.active"))
+        .map(c => c.dataset.agent);
+      if (selectedAgents.length === 0) {
+        selectedAgents = ["all"];
+        document.querySelector('[data-agent="all"]').classList.add("active");
+      }
+    }
+  });
+});
+
+// ============================================================
+// ANALYSIS
+// ============================================================
+let currentTaskId = null, startTime = null, timerInterval = null;
+
+analyzeBtn.addEventListener("click", async () => {
+  const ticker = tickerSelect.value;
+  const provider = document.getElementById("providerSelect").value;
+  if (!ticker) return;
+  
+  analyzeBtn.disabled = true;
+  analyzeBtn.classList.add("loading");
+  statusBadge.textContent = "جاري التحليل...";
+  statusBadge.className = "status-badge running";
+  showProgress(0, 0);
+  
+  try {
+    const agentsParam = selectedAgents.join(",");
+    const r = await fetch(`/analyze?ticker=${ticker}&llm_provider=${provider}&agents=${agentsParam}`, {method:"POST"});
+    const d = await r.json();
+    currentTaskId = d.task_id;
+    startTime = Date.now();
+    pollResult(currentTaskId);
+  } catch {
+    statusBadge.textContent = "خطأ في الاتصال";
+    statusBadge.className = "status-badge error";
+    resultsContent.innerHTML = `<div class="placeholder-view"><div class="placeholder-icon" style="border-color:var(--danger);color:var(--danger)">⚠️</div><div class="placeholder-title" style="color:var(--danger)">فشل الاتصال بالخادم</div><div class="placeholder-desc">تأكد من تشغيل الخادم وحاول مرة أخرى</div></div>`;
+    analyzeBtn.disabled = false;
+    analyzeBtn.classList.remove("loading");
+  }
+});
+
+function showProgress(pct, si) {
+  const r = 58, circ = 2 * Math.PI * r;
+  const off = circ - (pct / 100) * circ;
+  const stage = STAGES[Math.min(si, STAGES.length - 1)];
+  
+  let pills = "";
+  STAGES.forEach((s, i) => {
+    let cls = "stage-pill";
+    if (i < si) cls += " done";
+    else if (i === si) cls += " active";
+    pills += `<div class="${cls}">${s}</div>`;
+  });
+  
+  const agentAvatars = [
+    { icon: "📊", color: "#3b82f6" }, { icon: "💬", color: "#8b5cf6" },
+    { icon: "📰", color: "#06b6d4" }, { icon: "📋", color: "#10b981" },
+    { icon: "⚔️", color: "#f59e0b" }, { icon: "🛡️", color: "#ef4444" }
+  ];
+  
+  let avatars = "";
+  agentAvatars.forEach((a, i) => {
+    let cls = "progress-agent-avatar";
+    if (i < si) cls += " done";
+    else if (i === si) cls += " active";
+    avatars += `<div class="${cls}" style="color:${a.color}">${a.icon}</div>`;
+  });
+  
+  resultsContent.innerHTML = `
+    <div class="progress-view">
+      <div class="progress-ring-container">
+        <svg><circle class="bg" cx="70" cy="70" r="${r}"/><circle class="fill" cx="70" cy="70" r="${r}" stroke-dasharray="${circ}" stroke-dashoffset="${off}"/></svg>
+        <div class="pct">${pct}%</div>
+        <div class="pct-label">اكتمال</div>
+      </div>
+      <div class="progress-timer" id="progressTimer">00:00</div>
+      <div class="progress-stage">${stage}</div>
+      <div class="progress-sub">تحليل متعدد الوكلاء · ${selectedAgents.length} محللين نشطين</div>
+      <div class="progress-bar-outer"><div class="progress-bar-inner" style="width:${pct}%"></div></div>
+      <div class="stage-track">${pills}</div>
+      <div class="progress-agents">${avatars}</div>
+    </div>
+  `;
+}
+
+function pollResult(taskId) {
+  timerInterval = setInterval(() => {
+    const el = document.getElementById("progressTimer");
+    if (!el || !startTime) return;
+    const sec = Math.floor((Date.now() - startTime) / 1000);
+    el.textContent = `${String(Math.floor(sec / 60)).padStart(2, "0")}:${String(sec % 60).padStart(2, "0")}`;
+  }, 200);
+  
+  const poll = async () => {
+    try {
+      const r = await fetch(`/result/${taskId}`), d = await r.json();
+      if (d.status === "running") {
+        showProgress(d.progress || 0, d.stage || 0);
+        setTimeout(poll, 2000);
+        return;
+      }
+      clearInterval(timerInterval);
+      analyzeBtn.disabled = false;
+      analyzeBtn.classList.remove("loading");
+      
+      if (d.status === "error") {
+        statusBadge.textContent = "خطأ";
+        statusBadge.className = "status-badge error";
+        resultsContent.innerHTML = `<div class="placeholder-view"><div class="placeholder-icon" style="border-color:var(--danger);color:var(--danger)">⚠️</div><div class="placeholder-title" style="color:var(--danger)">حدث خطأ</div><div class="placeholder-desc">${escHtml(d.result)}</div></div>`;
+        return;
+      }
+      
+      statusBadge.textContent = "اكتمل التحليل";
+      statusBadge.className = "status-badge done";
+      renderResults(d.result, d.elapsed_seconds);
+    } catch {
+      setTimeout(poll, 2000);
+    }
+  };
+  poll();
+}
+
+// ============================================================
+// RENDER RESULTS
+// ============================================================
+function renderResults(result, elapsed) {
+  if (!result) {
+    resultsContent.innerHTML = `<div class="placeholder-view"><div class="placeholder-icon">📭</div><div class="placeholder-title">لا توجد نتائج</div></div>`;
+    return;
+  }
+  
+  const action = (result.action || "hold").toLowerCase();
+  const actionClass = action === "buy" || action === "overweight" ? "buy" : action === "sell" || action === "underweight" ? "sell" : "hold";
+  const actionEmoji = actionClass === "buy" ? "🟢" : actionClass === "sell" ? "🔴" : "🟡";
+  const fs = result.final_state;
+  const ticker = result.ticker || "";
+  const company = result.company || ticker;
+  const date = result.trade_date || "";
+  
+  let html = "";
+  
+  // === Market Summary ===
+  html += `<div class="market-summary">
+    <div class="market-summary-item"><div class="label">الزوج</div><div class="value" style="font-size:13px">${company}</div></div>
+    <div class="market-summary-item"><div class="label">التاريخ</div><div class="value" style="font-size:13px">${date}</div></div>
+    <div class="market-summary-item"><div class="label">السعر الحالي</div><div class="value" style="font-size:13px">${fs?.current_price || "—"}</div></div>
+  </div>`;
+  
+  // === Decision Card ===
+  html += `<div class="decision-card animate-fadeIn">
+    <div class="decision-emoji">${actionEmoji}</div>
+    <div class="decision-text ${actionClass}">${action.toUpperCase()}</div>
+    <div class="decision-sub">توصية فريق التحليل الذكي</div>
+    <div class="confidence-meter">
+      <div class="confidence-label">مستوى الثقة</div>
+      <div class="confidence-track"><div class="confidence-fill" style="width:75%"></div></div>
+      <div class="confidence-value">75%</div>
+    </div>
+  </div>`;
+  
+  // === Entry Points ===
+  let entryText = "";
+  if (fs?.trader_investment_plan) {
+    const lines = fs.trader_investment_plan.split("\n").filter(l =>
+      /entry|exit|price|target|stop|سعر|دخول|خروج|هدف|وقف|شراء|بيع|limit|order|point|مستوى/i.test(l)
+    );
+    if (lines.length > 0) entryText = lines.join("\n");
+  }
+  if (!entryText && fs?.investment_plan) {
+    const lines = fs.investment_plan.split("\n").filter(l =>
+      /entry|exit|price|target|stop|سعر|دخول|خروج|هدف|وقف|شراء|بيع|limit|order|point|مستوى/i.test(l)
+    );
+    if (lines.length > 0) entryText = lines.join("\n");
+  }
+  if (!entryText && fs?.final_trade_decision) {
+    const lines = fs.final_trade_decision.split("\n").filter(l =>
+      /entry|exit|price|target|stop|سعر|دخول|خروج|هدف|وقف|شراء|بيع|limit|order|point|مستوى/i.test(l)
+    );
+    if (lines.length > 0) entryText = lines.join("\n");
+  }
+  
+  if (entryText) {
+    html += `<div class="entry-card animate-slideUp">
+      <div class="entry-card-header"><span class="icon">🎯</span><div class="title">نقاط الدخول والخروج المقترحة</div></div>
+      <div style="font-size:12px;line-height:1.8;color:var(--text-secondary);white-space:pre-wrap">${escHtml(entryText)}</div>
+    </div>`;
+  }
+  
+  // === Final Decision Report ===
+  if (fs?.final_trade_decision) {
+    html += `<div class="result-card animate-slideUp">
+      <div class="result-card-header" onclick="toggleCard(this)">
+        <div class="left">
+          <div class="icon" style="background:rgba(0,212,170,0.1);color:var(--accent-primary)">📋</div>
+          <div><div class="title">تقرير القرار النهائي</div><div class="subtitle">التحليل الشامل والتوصية</div></div>
+        </div>
+        <div class="toggle">▾</div>
+      </div>
+      <div class="result-card-body">${escHtml(fs.final_trade_decision)}</div>
+    </div>`;
+  }
+  
+  // === Agent Reports ===
+  if (fs) {
+    html += `<div style="margin:16px 0 12px;font-size:13px;font-weight:700;color:var(--text-secondary);display:flex;align-items:center;gap:8px">
+      <span style="width:4px;height:16px;border-radius:2px;background:var(--grad-primary);display:inline-block"></span>
+      🔬 تقارير المحللين الذكيين
+    </div>`;
+    
+    const agents = [
+      { key: "market_report", name: "المحلل الفني", role: "التحليل الفني والمؤشرات", icon: "📊", color: "#3b82f6", bg: "rgba(59,130,246,0.1)" },
+      { key: "sentiment_report", name: "محلل المعنويات", role: "تحليل المشاعر والاتجاهات", icon: "💬", color: "#8b5cf6", bg: "rgba(139,92,246,0.1)" },
+      { key: "news_report", name: "محلل الأخبار", role: "الأخبار الاقتصادية والأحداث", icon: "📰", color: "#06b6d4", bg: "rgba(6,182,212,0.1)" },
+      { key: "fundamentals_report", name: "المحلل الأساسي", role: "التحليل الأساسي والبيانات", icon: "📋", color: "#10b981", bg: "rgba(16,185,129,0.1)" },
+    ];
+    
+    html += `<div class="agent-report-grid">`;
+    agents.forEach((ag, i) => {
+      const content = fs[ag.key];
+      if (!content) return;
+      html += `<div class="agent-report-card animate-slideUp" style="animation-delay:${i * 0.1}s">
+        <div class="agent-report-header">
+          <div class="agent-report-avatar" style="background:${ag.bg};color:${ag.color}">${ag.icon}<div class="status-dot active"></div></div>
+          <div><div class="agent-report-name" style="color:${ag.color}">${ag.name}</div><div class="agent-report-role">${ag.role}</div></div>
+        </div>
+        <div class="agent-report-body">${escHtml(content)}</div>
+      </div>`;
+    });
+    html += `</div>`;
+  }
+  
+  // === Investment Debate ===
+  if (fs?.debate) {
+    html += `<div style="margin:16px 0 12px;font-size:13px;font-weight:700;color:var(--text-secondary);display:flex;align-items:center;gap:8px">
+      <span style="width:4px;height:16px;border-radius:2px;background:var(--grad-primary);display:inline-block"></span>
+      ⚔️ مناقشة الاستثمار (Bull vs Bear)
+    </div>`;
+    
+    html += `<div class="debate-section">`;
+    if (fs.debate.bull) {
+      html += `<div class="debate-card debate-bull animate-slideUp">
+        <div class="debate-header"><div class="debate-avatar">🐂</div><div><div class="debate-name">Bull (صاعد)</div><div class="debate-role">الاتجاه الصاعد</div></div></div>
+        <div class="debate-body">${escHtml(fs.debate.bull)}</div>
+      </div>`;
+    }
+    if (fs.debate.bear) {
+      html += `<div class="debate-card debate-bear animate-slideUp">
+        <div class="debate-header"><div class="debate-avatar">🐻</div><div><div class="debate-name">Bear (هابط)</div><div class="debate-role">الاتجاه الهابط</div></div></div>
+        <div class="debate-body">${escHtml(fs.debate.bear)}</div>
+      </div>`;
+    }
+    if (fs.debate.judge) {
+      html += `<div class="debate-card debate-judge animate-slideUp">
+        <div class="debate-header"><div class="debate-avatar">⚖️</div><div><div class="debate-name">حكم المناقشة</div><div class="debate-role">القرار النهائي</div></div></div>
+        <div class="debate-body">${escHtml(fs.debate.judge)}</div>
+      </div>`;
+    }
+    html += `</div>`;
+  }
+  
+  // === Risk Debate ===
+  if (fs?.risk_debate) {
+    html += `<div style="margin:16px 0 12px;font-size:13px;font-weight:700;color:var(--text-secondary);display:flex;align-items:center;gap:8px">
+      <span style="width:4px;height:16px;border-radius:2px;background:var(--grad-primary);display:inline-block"></span>
+      🛡️ تقييم المخاطر
+    </div>`;
+    
+    html += `<div class="debate-section">`;
+    if (fs.risk_debate.conservative) {
+      html += `<div class="debate-card risk-conservative animate-slideUp">
+        <div class="debate-header"><div class="debate-avatar">🔵</div><div><div class="debate-name">متحفظ</div><div class="debate-role">إدارة المخاطر المتحفظة</div></div></div>
+        <div class="debate-body">${escHtml(fs.risk_debate.conservative)}</div>
+      </div>`;
+    }
+    if (fs.risk_debate.neutral) {
+      html += `<div class="debate-card risk-neutral animate-slideUp">
+        <div class="debate-header"><div class="debate-avatar">🟣</div><div><div class="debate-name">محايد</div><div class="debate-role">تقييم محايد للمخاطر</div></div></div>
+        <div class="debate-body">${escHtml(fs.risk_debate.neutral)}</div>
+      </div>`;
+    }
+    if (fs.risk_debate.aggressive) {
+      html += `<div class="debate-card risk-aggressive animate-slideUp">
+        <div class="debate-header"><div class="debate-avatar">🔴</div><div><div class="debate-name">جريء</div><div class="debate-role">إدارة المخاطر الجريئة</div></div></div>
+        <div class="debate-body">${escHtml(fs.risk_debate.aggressive)}</div>
+      </div>`;
+    }
+    if (fs.risk_debate.judge) {
+      html += `<div class="debate-card debate-judge animate-slideUp">
+        <div class="debate-header"><div class="debate-avatar">⚖️</div><div><div class="debate-name">حكم المخاطر</div><div class="debate-role">القرار النهائي</div></div></div>
+        <div class="debate-body">${escHtml(fs.risk_debate.judge)}</div>
+      </div>`;
+    }
+    html += `</div>`;
+  }
+  
+  // === Plans ===
+  if (fs?.trader_investment_plan) {
+    html += `<div class="result-card animate-slideUp">
+      <div class="result-card-header" onclick="toggleCard(this)">
+        <div class="left">
+          <div class="icon" style="background:rgba(245,158,11,0.1);color:var(--warning)">💰</div>
+          <div><div class="title">خطة المتداول</div><div class="subtitle">نقاط الدخول والخروج</div></div>
+        </div>
+        <div class="toggle">▾</div>
+      </div>
+      <div class="result-card-body">${escHtml(fs.trader_investment_plan)}</div>
+    </div>`;
+  }
+  if (fs?.investment_plan) {
+    html += `<div class="result-card animate-slideUp">
+      <div class="result-card-header" onclick="toggleCard(this)">
+        <div class="left">
+          <div class="icon" style="background:rgba(0,212,170,0.1);color:var(--accent-primary)">📐</div>
+          <div><div class="title">خطة الاستثمار النهائية</div><div class="subtitle">الاستراتيجية المقترحة</div></div>
+        </div>
+        <div class="toggle">▾</div>
+      </div>
+      <div class="result-card-body">${escHtml(fs.investment_plan)}</div>
+    </div>`;
+  }
+  
+  // === Footer ===
+  if (elapsed != null) {
+    const m = Math.floor(elapsed / 60), s = Math.floor(elapsed % 60);
+    html += `<div class="result-footer">
+      <span class="badge">⏱️ ${m}:${String(s).padStart(2, "0")}</span>
+      <span class="badge">${company}</span>
+      <span class="badge">${date}</span>
+      <span class="badge">${selectedAgents.map(a => AGENTS[a]?.name || a).join(" · ")}</span>
+    </div>`;
+  }
+  
+  resultsContent.innerHTML = html;
+  
+  // Expand first card by default
+  const firstCard = resultsContent.querySelector(".result-card");
+  if (firstCard) firstCard.classList.add("expanded");
+}
+
+function toggleCard(header) {
+  const card = header.closest(".result-card");
+  card.classList.toggle("expanded");
+}
+
+function togglePanel() {
+  resultsPanel.classList.toggle("collapsed");
+}
+
+function escHtml(t) {
+  if (!t) return "";
+  return String(t).replace(/[&<>"']/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : m === '>' ? '&gt;' : m === '"' ? '&quot;' : '&#039;');
+}
+
+// ============================================================
+// KEYBOARD SHORTCUTS
+// ============================================================
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
+    analyzeBtn.click();
+  }
+  if (e.key === "/" && document.activeElement !== pairSearch) {
+    e.preventDefault();
+    pairSearch.focus();
+  }
+});
+</script>
+</body>
+</html>
