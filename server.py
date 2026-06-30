@@ -4,8 +4,14 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, Query
 from fastapi.responses import HTMLResponse, JSONResponse
 
-# Load API keys from environment variables (set in Railway dashboard)
+# Load .env file if it exists (local dev fallback)
+load_dotenv()
+# On Railway, API keys come from dashboard environment variables
 # Required: DEEPSEEK_API_KEY, GROQ_API_KEY, GOOGLE_API_KEY
+
+MISSING_KEYS = [k for k in ("DEEPSEEK_API_KEY", "GROQ_API_KEY", "GOOGLE_API_KEY") if not os.environ.get(k)]
+if MISSING_KEYS:
+    print(f"WARNING: Missing env vars: {', '.join(MISSING_KEYS)}")
 
 analysis_results = {}
 app = FastAPI(title="TradingAgents — AI Multi-Agent Trading Analysis Platform")
@@ -124,8 +130,27 @@ def _run_task(task_id: str, ticker: str, llm_provider: str, trade_date: str, age
         ta = TradingAgentsGraph(debug=False, config=config)
         final_state, decision = ta.propagate(ticker, trade_date)
         
+        # Guard: propagate() must return dict; log type if not
+        if not isinstance(final_state, dict):
+            raise TypeError(
+                f"ta.propagate() returned {type(final_state).__name__} "
+                f"instead of dict: {str(final_state)[:500]}"
+            )
+        
         # Apply agent filtering
         filtered_state = _filter_by_agents(final_state, agents)
+        
+        def _safe_get(d, key, default=""):
+            v = d.get(key) if isinstance(d, dict) else default
+            return v if v is not None else default
+        
+        def _safe_nested(d, *keys):
+            for k in keys:
+                if isinstance(d, dict):
+                    d = d.get(k)
+                else:
+                    return ""
+            return d if d is not None else ""
         
         analysis_results[task_id] = {
             "status": "done",
@@ -133,28 +158,28 @@ def _run_task(task_id: str, ticker: str, llm_provider: str, trade_date: str, age
                 "action": decision,
                 "ticker": ticker,
                 "trade_date": trade_date,
-                "company": final_state.get("company_of_interest", ticker),
+                "company": _safe_get(final_state, "company_of_interest", ticker),
                 "agents": agents,
                 "final_state": {
-                    "market_report": filtered_state.get("market_report", ""),
-                    "sentiment_report": filtered_state.get("sentiment_report", ""),
-                    "news_report": filtered_state.get("news_report", ""),
-                    "fundamentals_report": filtered_state.get("fundamentals_report", ""),
-                    "trader_investment_plan": filtered_state.get("trader_investment_plan", ""),
-                    "investment_plan": filtered_state.get("investment_plan", ""),
-                    "final_trade_decision": filtered_state.get("final_trade_decision", ""),
-                    "current_price": filtered_state.get("instrument_context", {}).get("price", ""),
+                    "market_report": _safe_get(filtered_state, "market_report"),
+                    "sentiment_report": _safe_get(filtered_state, "sentiment_report"),
+                    "news_report": _safe_get(filtered_state, "news_report"),
+                    "fundamentals_report": _safe_get(filtered_state, "fundamentals_report"),
+                    "trader_investment_plan": _safe_get(filtered_state, "trader_investment_plan"),
+                    "investment_plan": _safe_get(filtered_state, "investment_plan"),
+                    "final_trade_decision": _safe_get(filtered_state, "final_trade_decision"),
+                    "current_price": _safe_nested(filtered_state, "instrument_context", "price"),
                     "debate": {
-                        "bull": filtered_state.get("investment_debate_state", {}).get("bull_history", ""),
-                        "bear": filtered_state.get("investment_debate_state", {}).get("bear_history", ""),
-                        "judge": filtered_state.get("investment_debate_state", {}).get("judge_decision", ""),
-                        "history": filtered_state.get("investment_debate_state", {}).get("history", ""),
+                        "bull": _safe_nested(filtered_state, "investment_debate_state", "bull_history"),
+                        "bear": _safe_nested(filtered_state, "investment_debate_state", "bear_history"),
+                        "judge": _safe_nested(filtered_state, "investment_debate_state", "judge_decision"),
+                        "history": _safe_nested(filtered_state, "investment_debate_state", "history"),
                     },
                     "risk_debate": {
-                        "aggressive": filtered_state.get("risk_debate_state", {}).get("aggressive_history", ""),
-                        "conservative": filtered_state.get("risk_debate_state", {}).get("conservative_history", ""),
-                        "neutral": filtered_state.get("risk_debate_state", {}).get("neutral_history", ""),
-                        "judge": filtered_state.get("risk_debate_state", {}).get("judge_decision", ""),
+                        "aggressive": _safe_nested(filtered_state, "risk_debate_state", "aggressive_history"),
+                        "conservative": _safe_nested(filtered_state, "risk_debate_state", "conservative_history"),
+                        "neutral": _safe_nested(filtered_state, "risk_debate_state", "neutral_history"),
+                        "judge": _safe_nested(filtered_state, "risk_debate_state", "judge_decision"),
                     },
                 }
             },
