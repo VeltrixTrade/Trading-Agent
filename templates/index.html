@@ -610,6 +610,140 @@ body::before {
   color: var(--text-secondary);
 }
 
+/* --- Analysis Type Chips --- */
+.analysis-types-section {
+  margin-bottom: 24px;
+}
+.analysis-types-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.analysis-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.analysis-chip {
+  padding: 8px 16px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border);
+  background: var(--bg-surface);
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 700;
+  font-family: 'Cairo', sans-serif;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.analysis-chip:hover {
+  border-color: var(--border-light);
+  color: var(--text-secondary);
+  background: var(--bg-card-hover);
+}
+.analysis-chip.selected {
+  border-color: var(--accent);
+  background: var(--accent-dim);
+  color: var(--accent);
+  box-shadow: 0 0 12px rgba(0,212,170,0.1);
+}
+.analysis-chip .chip-check {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  transition: var(--transition);
+  flex-shrink: 0;
+}
+.analysis-chip.selected .chip-check {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--bg-deep);
+}
+
+/* --- Speed Mode Toggle --- */
+.speed-mode-section {
+  margin-bottom: 24px;
+}
+.speed-mode-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.speed-toggle {
+  display: flex;
+  gap: 0;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: var(--bg-surface);
+}
+.speed-option {
+  flex: 1;
+  padding: 10px 20px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 700;
+  font-family: 'Cairo', sans-serif;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: var(--transition);
+  border: none;
+  background: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.speed-option:not(:last-child) {
+  border-left: 1px solid var(--border);
+}
+.speed-option:hover {
+  color: var(--text-secondary);
+  background: rgba(255,255,255,0.02);
+}
+.speed-option.active {
+  background: var(--accent-dim);
+  color: var(--accent);
+}
+.speed-desc {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 8px;
+  padding: 8px 12px;
+  background: var(--bg-surface);
+  border-radius: var(--radius-xs);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.speed-desc .speed-icon { font-size: 14px; }
+
+/* --- Divider --- */
+.form-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 4px 0 20px;
+}
+
 /* ============================================
    RESULTS SECTION
    ============================================ */
@@ -1260,9 +1394,70 @@ body::before {
       </div>
     </div>
 
+    <div class="form-divider"></div>
+
+    <!-- Speed Mode -->
+    <div class="speed-mode-section">
+      <div class="speed-mode-label">
+        <span class="icon">⚡</span> سرعة التحليل
+      </div>
+      <div class="speed-toggle" id="speedToggle">
+        <button class="speed-option active" data-speed="quick" onclick="setSpeedMode('quick')">
+          ⚡ تحليل سريع
+        </button>
+        <button class="speed-option" data-speed="balanced" onclick="setSpeedMode('balanced')">
+          ⚖️ متوازن
+        </button>
+        <button class="speed-option" data-speed="deep" onclick="setSpeedMode('deep')">
+          🔬 تحليل عميق
+        </button>
+      </div>
+      <div class="speed-desc" id="speedDesc">
+        <span class="speed-icon">⚡</span>
+        <span id="speedDescText">تحليل سريع مع التركيز على أهم العوامل — مناسب للقرارات السريعة</span>
+      </div>
+    </div>
+
+    <!-- Analysis Type Selection -->
+    <div class="analysis-types-section">
+      <div class="analysis-types-label">
+        <span class="icon">🎯</span> نوع التحليل <span style="font-weight:400;color:var(--text-muted)">(اختر واحد أو أكثر)</span>
+      </div>
+      <div class="analysis-chips" id="analysisChips">
+        <div class="analysis-chip selected" data-agent="all" onclick="toggleChip(this)">
+          <span class="chip-check">✓</span>
+          🌐 تحليل شامل
+        </div>
+        <div class="analysis-chip" data-agent="technical" onclick="toggleChip(this)">
+          <span class="chip-check">✓</span>
+          📊 فني
+        </div>
+        <div class="analysis-chip" data-agent="fundamental" onclick="toggleChip(this)">
+          <span class="chip-check">✓</span>
+          📋 أساسي
+        </div>
+        <div class="analysis-chip" data-agent="news" onclick="toggleChip(this)">
+          <span class="chip-check">✓</span>
+          📰 أخبار
+        </div>
+        <div class="analysis-chip" data-agent="sentiment" onclick="toggleChip(this)">
+          <span class="chip-check">✓</span>
+          💬 معنويات
+        </div>
+        <div class="analysis-chip" data-agent="risk" onclick="toggleChip(this)">
+          <span class="chip-check">✓</span>
+          🛡️ مخاطر
+        </div>
+        <div class="analysis-chip" data-agent="debate" onclick="toggleChip(this)">
+          <span class="chip-check">✓</span>
+          ⚔️ مناقشة
+        </div>
+      </div>
+    </div>
+
     <button class="btn-analyze" id="analyzeBtn">
       <span class="spinner"></span>
-      <span class="btn-text">🚀 بدء التحليل الشامل</span>
+      <span class="btn-text" id="analyzeBtnText">⚡ بدء التحليل السريع</span>
     </button>
 
     <div class="status-bar">
@@ -1408,6 +1603,7 @@ function populatePairs(filter) {
   }
 }
 populatePairs();
+setSpeedMode('quick');
 pairSearch.addEventListener("input", e => populatePairs(e.target.value));
 
 // ============================================
@@ -1471,7 +1667,8 @@ analyzeBtn.addEventListener("click", async () => {
   try {
     const provider = $("providerSelect").value;
     const tradeDate = $("tradeDateInput").value || "";
-    let url = `/analyze?ticker=${encodeURIComponent(ticker)}&llm_provider=${provider}`;
+    const agents = getSelectedAgents();
+    let url = `/analyze?ticker=${encodeURIComponent(ticker)}&llm_provider=${provider}&agents=${encodeURIComponent(agents)}`;
     if (tradeDate) url += `&trade_date=${tradeDate}`;
 
     const r = await fetch(url, { method: "POST" });
@@ -1620,7 +1817,8 @@ function renderResults(result, elapsed) {
 
   // Extract entry/exit prices
   let entryBuy = "—", entrySell = "—", stopLoss = "—", takeProfit = "—";
-  const planText = fs?.trader_investment_plan || fs?.investment_plan || fs?.final_trade_decision || "";
+  // Extract entry/exit prices
+  const planText = fs?.summary_decision || fs?.trader_investment_plan || fs?.investment_plan || fs?.final_trade_decision || "";
   if (planText) {
     const e = findPrice(planText, ["entry", "دخول", "شراء", "buy"]);
     if (e !== "—") entryBuy = e;
@@ -1667,9 +1865,14 @@ function renderResults(result, elapsed) {
       </div>
     </div>`;
 
+  // === CONCISE SUMMARY ===
+  if (fs?.summary_decision) {
+    html += buildReportCard("📝 ملخص التوصية ومستويات التداول", fs.summary_decision, "var(--grad-main)", true);
+  }
+
   // === FINAL TRADE DECISION ===
   if (fs?.final_trade_decision) {
-    html += buildReportCard("💡 التقرير والقرار النهائي", fs.final_trade_decision, "var(--grad-main)", true);
+    html += buildReportCard("💡 التقرير والقرار النهائي التفصيلي", fs.final_trade_decision, "var(--grad-hero)", false);
   }
 
   // === TRADER PLAN ===
@@ -1808,6 +2011,130 @@ function setupInteractions() {
       if (panel) panel.classList.add("active");
     });
   });
+}
+
+// ============================================
+// ANALYSIS TYPE CHIPS
+// ============================================
+let currentSpeedMode = "quick";
+
+function toggleChip(chip) {
+  const agent = chip.dataset.agent;
+  const allChips = document.querySelectorAll(".analysis-chip");
+
+  if (agent === "all") {
+    // "All" is exclusive — deselect everything else
+    allChips.forEach(c => c.classList.remove("selected"));
+    chip.classList.add("selected");
+  } else {
+    // Deselect "all" first
+    const allChip = document.querySelector('[data-agent="all"]');
+    if (allChip) allChip.classList.remove("selected");
+
+    // Toggle this chip
+    chip.classList.toggle("selected");
+
+    // If nothing is selected, re-select "all"
+    const selected = document.querySelectorAll(".analysis-chip.selected");
+    if (selected.length === 0 && allChip) {
+      allChip.classList.add("selected");
+    }
+
+    // If all individual chips are selected, switch to "all"
+    const individualChips = document.querySelectorAll('.analysis-chip:not([data-agent="all"])');
+    const selectedIndividual = document.querySelectorAll('.analysis-chip.selected:not([data-agent="all"])');
+    if (selectedIndividual.length === individualChips.length && allChip) {
+      allChips.forEach(c => c.classList.remove("selected"));
+      allChip.classList.add("selected");
+    }
+  }
+  updateBtnText();
+}
+
+function getSelectedAgents() {
+  const allChip = document.querySelector('.analysis-chip.selected[data-agent="all"]');
+  if (allChip) return "all";
+
+  const selected = document.querySelectorAll(".analysis-chip.selected");
+  if (selected.length === 0) return "all";
+
+  return Array.from(selected).map(c => c.dataset.agent).join(",");
+}
+
+function updateBtnText() {
+  const btn = $("analyzeBtnText");
+  const agents = getSelectedAgents();
+  const speedIcons = { quick: "⚡", balanced: "⚖️", deep: "🔬" };
+  const icon = speedIcons[currentSpeedMode] || "🚀";
+
+  if (agents === "all") {
+    const labels = { quick: "بدء التحليل السريع", balanced: "بدء التحليل المتوازن", deep: "بدء التحليل العميق الشامل" };
+    btn.textContent = `${icon} ${labels[currentSpeedMode] || "بدء التحليل"}`;
+  } else {
+    const count = agents.split(",").length;
+    const typeLabel = count === 1 ? "تحليل مخصص" : `تحليل ${count} أنواع`;
+    btn.textContent = `${icon} ${typeLabel}`;
+  }
+}
+
+// ============================================
+// SPEED MODE
+// ============================================
+const SPEED_CONFIG = {
+  quick: {
+    desc: "تحليل سريع مع التركيز على أهم العوامل — مناسب للقرارات السريعة",
+    icon: "⚡",
+    provider: "groq",
+    agents: ["technical", "news"],
+  },
+  balanced: {
+    desc: "توازن بين السرعة والشمولية — تحليل فني وأساسي وأخبار",
+    icon: "⚖️",
+    provider: "deepseek",
+    agents: ["technical", "fundamental", "news", "sentiment"],
+  },
+  deep: {
+    desc: "تحليل شامل بكل الوكلاء مع مناقشة وتقييم مخاطر — الأبطأ والأدق",
+    icon: "🔬",
+    provider: "deepseek",
+    agents: ["all"],
+  },
+};
+
+function setSpeedMode(mode) {
+  currentSpeedMode = mode;
+  const config = SPEED_CONFIG[mode];
+
+  // Update toggle buttons
+  document.querySelectorAll(".speed-option").forEach(btn => {
+    btn.classList.toggle("active", btn.dataset.speed === mode);
+  });
+
+  // Update description
+  $("speedDescText").textContent = config.desc;
+  document.querySelector("#speedDesc .speed-icon").textContent = config.icon;
+
+  // Auto-select recommended provider
+  const providerSelect = $("providerSelect");
+  if (config.provider) {
+    providerSelect.value = config.provider;
+  }
+
+  // Auto-select recommended agents
+  const allChips = document.querySelectorAll(".analysis-chip");
+  allChips.forEach(c => c.classList.remove("selected"));
+
+  if (config.agents.includes("all")) {
+    const allChip = document.querySelector('[data-agent="all"]');
+    if (allChip) allChip.classList.add("selected");
+  } else {
+    config.agents.forEach(agent => {
+      const chip = document.querySelector(`[data-agent="${agent}"]`);
+      if (chip) chip.classList.add("selected");
+    });
+  }
+
+  updateBtnText();
 }
 
 // ============================================

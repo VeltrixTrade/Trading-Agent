@@ -225,8 +225,112 @@ def _translate_text(text: str, max_retries: int = 2) -> str:
             except Exception as e:
                 print(f"Translation error with {provider['name']}: {e}")
         
-    # If all providers fail, return original text
     print("WARNING: All translation providers failed, returning original text")
+    return text
+
+
+SUMMARY_SYSTEM_PROMPT = """أنت خبير ومحلل مالي محترف ومتداول متمرس. قم بتلخيص وإعادة صياغة تقرير التحليل المالي التالي للرمز {ticker} بالكامل ليكون ملخصاً قصيراً ومختصراً ولكن مفيداً للغاية وعالي القيمة للمتداول.
+
+يجب أن يحتوي الملخص بدقة على الأقسام التالية باللغة العربية الفصحى وبتنسيق Markdown واضح ومباشر:
+
+1. 🎯 **التوصية والاتجاه**: (شراء صريح / بيع صريح / انتظار ومراقبة - مع كتابة جملة واحدة توضح السبب الرئيسي).
+2. 💰 **مستويات التداول الحقيقية**:
+   - **سعر الدخول الحقيقي المقترح**: [ابحث واستخرج السعر الدقيق أو النطاق المقترح للدخول من التقرير]
+   - **وقف الخسارة (Stop Loss)**: [ابحث واستخرج السعر الدقيق المقترح لوقف الخسارة]
+   - **الهدف الأول (Take Profit 1)**: [الهدف الأول المقترح]
+   - **الهدف الثاني (Take Profit 2)**: [الهدف الثاني المقترح إن وجد]
+3. 🔬 **أهم أسباب القرار (نقاط سريعة وموجزة)**:
+   - [اكتب 3 نقاط رصاصية سريعة تلخص أهم العوامل الفنية مثل RSI/MACD/المتوسطات]
+   - [اكتب نقطة رصاصية سريعة تلخص المعنويات والأخبار الحالية المؤثرة]
+
+قواعد صارمة:
+- استخرج مستويات التداول الحقيقية (الدخول، وقف الخسارة، جني الأرباح) بدقة من نص التقرير المالي.
+- إذا لم يذكر التقرير أسعاراً رقمية صريحة، قم بتحديدها بناءً على أقرب مستويات الدعم والمقاومة أو السعر الحالي المذكور في التقرير بطريقة منطقية ومفيدة للمتداول.
+- لا تكتب مقدمات أو عبارات ترحيبية أو تعليقات جانبية. ابدأ مباشرة بالقسم الأول.
+"""
+
+def _summarize_and_format_report(text: str, ticker: str) -> str:
+    """Summarize and format the trade decision to be concise, useful, and in Arabic."""
+    if not text or not text.strip():
+        return text
+    
+    prompt = SUMMARY_SYSTEM_PROMPT.format(ticker=ticker)
+    
+    providers = []
+    
+    # Primary: Groq (fast)
+    groq_key = os.environ.get("GROQ_API_KEY")
+    if groq_key:
+        providers.append({
+            "url": "https://api.groq.com/openai/v1/chat/completions",
+            "key": groq_key,
+            "model": "llama-3.3-70b-versatile",
+            "name": "Groq",
+        })
+    
+    # Fallback: DeepSeek
+    ds_key = os.environ.get("DEEPSEEK_API_KEY")
+    if ds_key:
+        providers.append({
+            "url": "https://api.deepseek.com/v1/chat/completions",
+            "key": ds_key,
+            "model": "deepseek-chat",
+            "name": "DeepSeek",
+        })
+        
+    # Fallback: Google Gemini
+    google_key = os.environ.get("GOOGLE_API_KEY")
+    if google_key:
+        providers.append({
+            "url": f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={google_key}",
+            "key": google_key,
+            "model": "gemini",
+            "name": "Google",
+        })
+        
+    for provider in providers:
+        for attempt in range(2):
+            try:
+                if provider["name"] == "Google":
+                    resp = requests.post(
+                        provider["url"],
+                        headers={"Content-Type": "application/json"},
+                        json={
+                            "contents": [{
+                                "parts": [{"text": f"{prompt}\n\n---\n\n{text}"}]
+                            }],
+                            "generationConfig": {"temperature": 0.2}
+                        },
+                        timeout=120
+                    )
+                    if resp.status_code == 200:
+                        data = resp.json()
+                        return data["candidates"][0]["content"]["parts"][0]["text"].strip()
+                else:
+                    resp = requests.post(
+                        provider["url"],
+                        headers={
+                            "Authorization": f"Bearer {provider['key']}",
+                            "Content-Type": "application/json",
+                        },
+                        json={
+                            "model": provider["model"],
+                            "messages": [
+                                {"role": "system", "content": prompt},
+                                {"role": "user", "content": text}
+                            ],
+                            "temperature": 0.2,
+                            "max_tokens": 4000,
+                        },
+                        timeout=120
+                    )
+                    if resp.status_code == 200:
+                        data = resp.json()
+                        return data["choices"][0]["message"]["content"].strip()
+                print(f"Summarization attempt {attempt+1} with {provider['name']} failed: {resp.status_code}")
+            except Exception as e:
+                print(f"Summarization error with {provider['name']}: {e}")
+                
     return text
 
 
@@ -236,7 +340,19 @@ def _translate_results(result: dict, task_id: str) -> dict:
         return result
     
     fs = result["final_state"]
+    ticker = result.get("ticker", "")
     
+    # First, generate the concise summary decision from final_trade_decision
+    final_decision = fs.get("final_trade_decision")
+    if final_decision and isinstance(final_decision, str) and final_decision.strip():
+        try:
+            print(f"[{task_id}] Generating concise Arabic summary from final decision...")
+            fs["summary_decision"] = _summarize_and_format_report(final_decision, ticker)
+            print(f"[{task_id}] ✓ Concise summary generated successfully!")
+        except Exception as se:
+            print(f"[{task_id}] WARNING: Summary generation failed: {se}")
+            fs["summary_decision"] = ""
+
     # Fields to translate
     text_fields = [
         "market_report", "sentiment_report", "news_report",
@@ -329,6 +445,7 @@ def _run_task(task_id: str, ticker: str, llm_provider: str, trade_date: str, age
                 "trader_investment_plan": _safe_get(filtered_state, "trader_investment_plan"),
                 "investment_plan": _safe_get(filtered_state, "investment_plan"),
                 "final_trade_decision": _safe_get(filtered_state, "final_trade_decision"),
+                "summary_decision": "",  # Will be generated during processing
                 "current_price": _safe_nested(filtered_state, "instrument_context", "price"),
                 "debate": {
                     "bull": _safe_nested(filtered_state, "investment_debate_state", "bull_history"),
