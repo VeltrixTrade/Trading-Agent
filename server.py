@@ -1,4 +1,4 @@
-import os, asyncio, uuid, time
+import os, asyncio, uuid, time, json, requests
 from pathlib import Path
 from dotenv import load_dotenv
 from fastapi import FastAPI, Query
@@ -22,6 +22,7 @@ STAGES = [
     "مناقشة فريق المحللين",
     "تقييم المخاطر",
     "اتخاذ القرار النهائي",
+    "ترجمة التقارير للعربية",
 ]
 
 PROVIDER_MODELS = {
@@ -76,13 +77,17 @@ async def get_result(task_id: str):
     if data.get("status") == "done":
         data["elapsed_seconds"] = round(time.time() - data.get("start_time", time.time()), 1)
         data["progress"] = 100
+    elif data.get("status") == "translating":
+        data["elapsed_seconds"] = round(time.time() - data.get("start_time", time.time()), 1)
+        data["stage"] = len(STAGES) - 1
+        data["progress"] = min(98, data.get("progress", 90))
     elif data.get("status") == "running":
         data["elapsed_seconds"] = round(time.time() - data.get("start_time", time.time()), 1)
         elapsed = data["elapsed_seconds"]
         est_total = {"deepseek": 120, "groq": 180, "google": 150, "openai": 200, "ollama": 1800}
         est = est_total.get(data.get("provider", "deepseek"), 180)
-        data["progress"] = min(95, int((elapsed / est) * 100))
-        stg = min(len(STAGES) - 1, int((elapsed / est) * len(STAGES)))
+        data["progress"] = min(88, int((elapsed / est) * 100))
+        stg = min(len(STAGES) - 2, int((elapsed / est) * (len(STAGES) - 1)))
         data["stage"] = stg
     return JSONResponse(data)
 
@@ -112,6 +117,163 @@ def _filter_by_agents(final_state, agents_param):
         filtered["risk_debate_state"] = final_state["risk_debate_state"]
     
     return filtered
+
+# ============================================
+# TRANSLATION ENGINE
+# ============================================
+TRANSLATION_SYSTEM_PROMPT = """أنت مترجم مالي محترف. ترجم النص التالي من الإنجليزية إلى العربية بدقة عالية.
+قواعد الترجمة:
+- حافظ على نفس التنسيق والهيكل (العناوين، القوائم، الجداول، الأرقام)
+- حافظ على المصطلحات المالية الفنية مع ترجمتها (مثل: RSI = مؤشر القوة النسبية، MACD = الماكد، Moving Average = المتوسط المتحرك)
+- لا تغير الأرقام أو الرموز المالية أو أسماء الأزواج
+- حافظ على علامات الماركداون (# ## ### ** | )
+- اكتب الترجمة فقط بدون أي مقدمات أو تعليقات
+- إذا كان النص يحتوي بالفعل على عربية، أبقه كما هو"""
+
+def _translate_text(text: str, max_retries: int = 2) -> str:
+    """Translate text to Arabic using Groq API (primary) or DeepSeek (fallback)."""
+    if not text or not text.strip():
+        return text
+    
+    # Skip if text is already mostly Arabic
+    arabic_chars = sum(1 for c in text if '\u0600' <= c <= '\u06FF')
+    if arabic_chars > len(text) * 0.4:
+        return text
+    
+    # Truncate very long texts to avoid token limits
+    max_chars = 12000
+    if len(text) > max_chars:
+        text = text[:max_chars] + "\n\n[... تم اختصار باقي النص ...]" 
+    
+    providers = []
+    
+    # Primary: Groq (fast)
+    groq_key = os.environ.get("GROQ_API_KEY")
+    if groq_key:
+        providers.append({
+            "url": "https://api.groq.com/openai/v1/chat/completions",
+            "key": groq_key,
+            "model": "llama-3.3-70b-versatile",
+            "name": "Groq",
+        })
+    
+    # Fallback: DeepSeek
+    ds_key = os.environ.get("DEEPSEEK_API_KEY")
+    if ds_key:
+        providers.append({
+            "url": "https://api.deepseek.com/v1/chat/completions",
+            "key": ds_key,
+            "model": "deepseek-chat",
+            "name": "DeepSeek",
+        })
+    
+    # Fallback: Google Gemini
+    google_key = os.environ.get("GOOGLE_API_KEY")
+    if google_key:
+        providers.append({
+            "url": f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={google_key}",
+            "key": google_key,
+            "model": "gemini",
+            "name": "Google",
+        })
+    
+    for provider in providers:
+        for attempt in range(max_retries):
+            try:
+                if provider["name"] == "Google":
+                    # Google Gemini API format
+                    resp = requests.post(
+                        provider["url"],
+                        headers={"Content-Type": "application/json"},
+                        json={
+                            "contents": [{
+                                "parts": [{"text": f"{TRANSLATION_SYSTEM_PROMPT}\n\n---\n\n{text}"}]
+                            }],
+                            "generationConfig": {"temperature": 0.2}
+                        },
+                        timeout=120
+                    )
+                    if resp.status_code == 200:
+                        data = resp.json()
+                        translated = data["candidates"][0]["content"]["parts"][0]["text"]
+                        return translated.strip()
+                else:
+                    # OpenAI-compatible API format (Groq, DeepSeek)
+                    resp = requests.post(
+                        provider["url"],
+                        headers={
+                            "Authorization": f"Bearer {provider['key']}",
+                            "Content-Type": "application/json",
+                        },
+                        json={
+                            "model": provider["model"],
+                            "messages": [
+                                {"role": "system", "content": TRANSLATION_SYSTEM_PROMPT},
+                                {"role": "user", "content": text}
+                            ],
+                            "temperature": 0.2,
+                            "max_tokens": 8000,
+                        },
+                        timeout=120
+                    )
+                    if resp.status_code == 200:
+                        data = resp.json()
+                        translated = data["choices"][0]["message"]["content"]
+                        return translated.strip()
+                    
+                print(f"Translation attempt {attempt+1} with {provider['name']} failed: {resp.status_code} - {resp.text[:200]}")
+            except Exception as e:
+                print(f"Translation error with {provider['name']}: {e}")
+        
+    # If all providers fail, return original text
+    print("WARNING: All translation providers failed, returning original text")
+    return text
+
+
+def _translate_results(result: dict, task_id: str) -> dict:
+    """Translate all report fields in the result to Arabic."""
+    if not result or "final_state" not in result:
+        return result
+    
+    fs = result["final_state"]
+    
+    # Fields to translate
+    text_fields = [
+        "market_report", "sentiment_report", "news_report",
+        "fundamentals_report", "trader_investment_plan",
+        "investment_plan", "final_trade_decision",
+    ]
+    
+    total = sum(1 for f in text_fields if fs.get(f))
+    translated_count = 0
+    
+    for field in text_fields:
+        content = fs.get(field)
+        if content and isinstance(content, str) and content.strip():
+            print(f"[{task_id}] Translating {field} ({len(content)} chars)...")
+            fs[field] = _translate_text(content)
+            translated_count += 1
+            print(f"[{task_id}] ✓ Translated {field} ({translated_count}/{total})")
+    
+    # Translate debate fields
+    if fs.get("debate") and isinstance(fs["debate"], dict):
+        for key in ["bull", "bear", "judge"]:
+            val = fs["debate"].get(key)
+            if val and isinstance(val, str) and val.strip():
+                print(f"[{task_id}] Translating debate.{key}...")
+                fs["debate"][key] = _translate_text(val)
+    
+    # Translate risk debate fields
+    if fs.get("risk_debate") and isinstance(fs["risk_debate"], dict):
+        for key in ["conservative", "neutral", "aggressive", "judge"]:
+            val = fs["risk_debate"].get(key)
+            if val and isinstance(val, str) and val.strip():
+                print(f"[{task_id}] Translating risk.{key}...")
+                fs["risk_debate"][key] = _translate_text(val)
+    
+    result["final_state"] = fs
+    return result
+
 
 def _run_task(task_id: str, ticker: str, llm_provider: str, trade_date: str, agents: str):
     try:
@@ -152,37 +314,54 @@ def _run_task(task_id: str, ticker: str, llm_provider: str, trade_date: str, age
                     return ""
             return d if d is not None else ""
         
+        # Build the result
+        result_data = {
+            "action": decision,
+            "ticker": ticker,
+            "trade_date": trade_date,
+            "company": _safe_get(final_state, "company_of_interest", ticker),
+            "agents": agents,
+            "final_state": {
+                "market_report": _safe_get(filtered_state, "market_report"),
+                "sentiment_report": _safe_get(filtered_state, "sentiment_report"),
+                "news_report": _safe_get(filtered_state, "news_report"),
+                "fundamentals_report": _safe_get(filtered_state, "fundamentals_report"),
+                "trader_investment_plan": _safe_get(filtered_state, "trader_investment_plan"),
+                "investment_plan": _safe_get(filtered_state, "investment_plan"),
+                "final_trade_decision": _safe_get(filtered_state, "final_trade_decision"),
+                "current_price": _safe_nested(filtered_state, "instrument_context", "price"),
+                "debate": {
+                    "bull": _safe_nested(filtered_state, "investment_debate_state", "bull_history"),
+                    "bear": _safe_nested(filtered_state, "investment_debate_state", "bear_history"),
+                    "judge": _safe_nested(filtered_state, "investment_debate_state", "judge_decision"),
+                    "history": _safe_nested(filtered_state, "investment_debate_state", "history"),
+                },
+                "risk_debate": {
+                    "aggressive": _safe_nested(filtered_state, "risk_debate_state", "aggressive_history"),
+                    "conservative": _safe_nested(filtered_state, "risk_debate_state", "conservative_history"),
+                    "neutral": _safe_nested(filtered_state, "risk_debate_state", "neutral_history"),
+                    "judge": _safe_nested(filtered_state, "risk_debate_state", "judge_decision"),
+                },
+            }
+        }
+        
+        # === TRANSLATION STAGE ===
+        analysis_results[task_id]["stage"] = len(STAGES) - 1  # Translation stage
+        analysis_results[task_id]["progress"] = 90
+        analysis_results[task_id]["status"] = "translating"
+        print(f"[{task_id}] Starting Arabic translation...")
+        
+        try:
+            result_data = _translate_results(result_data, task_id)
+            print(f"[{task_id}] ✓ Translation complete!")
+        except Exception as te:
+            print(f"[{task_id}] WARNING: Translation failed: {te}")
+            # Continue with untranslated results
+        
+        # === DONE ===
         analysis_results[task_id] = {
             "status": "done",
-            "result": {
-                "action": decision,
-                "ticker": ticker,
-                "trade_date": trade_date,
-                "company": _safe_get(final_state, "company_of_interest", ticker),
-                "agents": agents,
-                "final_state": {
-                    "market_report": _safe_get(filtered_state, "market_report"),
-                    "sentiment_report": _safe_get(filtered_state, "sentiment_report"),
-                    "news_report": _safe_get(filtered_state, "news_report"),
-                    "fundamentals_report": _safe_get(filtered_state, "fundamentals_report"),
-                    "trader_investment_plan": _safe_get(filtered_state, "trader_investment_plan"),
-                    "investment_plan": _safe_get(filtered_state, "investment_plan"),
-                    "final_trade_decision": _safe_get(filtered_state, "final_trade_decision"),
-                    "current_price": _safe_nested(filtered_state, "instrument_context", "price"),
-                    "debate": {
-                        "bull": _safe_nested(filtered_state, "investment_debate_state", "bull_history"),
-                        "bear": _safe_nested(filtered_state, "investment_debate_state", "bear_history"),
-                        "judge": _safe_nested(filtered_state, "investment_debate_state", "judge_decision"),
-                        "history": _safe_nested(filtered_state, "investment_debate_state", "history"),
-                    },
-                    "risk_debate": {
-                        "aggressive": _safe_nested(filtered_state, "risk_debate_state", "aggressive_history"),
-                        "conservative": _safe_nested(filtered_state, "risk_debate_state", "conservative_history"),
-                        "neutral": _safe_nested(filtered_state, "risk_debate_state", "neutral_history"),
-                        "judge": _safe_nested(filtered_state, "risk_debate_state", "judge_decision"),
-                    },
-                }
-            },
+            "result": result_data,
             "start_time": task.get("start_time", time.time()),
             "stage": len(STAGES) - 1, "progress": 100,
             "provider": llm_provider,

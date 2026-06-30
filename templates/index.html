@@ -358,7 +358,7 @@ body::before {
 }
 .stages-grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 16px;
 }
 .stage-card {
@@ -377,6 +377,7 @@ body::before {
 .stage-card:nth-child(3) { animation-delay: 0.3s; }
 .stage-card:nth-child(4) { animation-delay: 0.4s; }
 .stage-card:nth-child(5) { animation-delay: 0.5s; }
+.stage-card:nth-child(6) { animation-delay: 0.6s; }
 .stage-card::before {
   content: '';
   position: absolute;
@@ -1097,7 +1098,6 @@ body::before {
 
 @media (max-width: 480px) {
   .stages-grid { grid-template-columns: 1fr 1fr; }
-  .stage-card:nth-child(5) { grid-column: 1 / -1; }
   .hero-title { font-size: 28px; }
   .hero-desc { font-size: 14px; }
   .analysis-card-title { font-size: 17px; }
@@ -1178,7 +1178,7 @@ body::before {
 <section class="stages-section" id="stagesSection">
   <div class="section-header">
     <h2>⚙️ كيف يعمل التحليل؟</h2>
-    <p>خمس مراحل متتابعة لتحليل شامل ودقيق</p>
+    <p>ست مراحل متتابعة لتحليل شامل ودقيق مع ترجمة عربية تلقائية</p>
   </div>
   <div class="stages-grid">
     <div class="stage-card">
@@ -1205,6 +1205,11 @@ body::before {
       <div class="stage-num">05</div>
       <div class="stage-icon">🎯</div>
       <div class="stage-title">اتخاذ القرار<br>النهائي</div>
+    </div>
+    <div class="stage-card">
+      <div class="stage-num">06</div>
+      <div class="stage-icon">🌐</div>
+      <div class="stage-title">ترجمة التقارير<br>للعربية</div>
     </div>
   </div>
 </section>
@@ -1323,7 +1328,8 @@ const STAGES = [
   "الأخبار والمعنويات",
   "مناقشة المحللين",
   "تقييم المخاطر",
-  "القرار النهائي"
+  "القرار النهائي",
+  "🌐 ترجمة التقارير للعربية"
 ];
 
 const CAT_ORDER = ["عملات", "أسهم", "مؤشرات", "سلع", "عملات رقمية"];
@@ -1491,7 +1497,7 @@ function setStatus(state, text) {
   statusText.textContent = text;
 }
 
-function showProgress(pct, stageIdx) {
+function showProgress(pct, stageIdx, isTranslating = false) {
   const r = 68, circ = 2 * Math.PI * r;
   const off = circ - (pct / 100) * circ;
   const stage = STAGES[Math.min(stageIdx, STAGES.length - 1)];
@@ -1504,8 +1510,28 @@ function showProgress(pct, stageIdx) {
     pills += `<div class="${cls}">${s}</div>`;
   });
 
+  const translatingBanner = isTranslating ? `
+    <div style="
+      margin-bottom:24px;
+      padding:14px 28px;
+      border-radius:var(--radius-full);
+      background:linear-gradient(135deg, rgba(99,102,241,0.12), rgba(0,212,170,0.08));
+      border:1px solid rgba(99,102,241,0.25);
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      font-size:14px;
+      font-weight:700;
+      color:var(--accent);
+      animation:glow-pulse 2s ease infinite;
+    ">
+      <span style="font-size:20px;animation:spin 3s linear infinite;display:inline-block">🌐</span>
+      جاري ترجمة التقارير إلى اللغة العربية...
+    </div>` : "";
+
   resultsArea.innerHTML = `
     <div class="progress-view">
+      ${translatingBanner}
       <div class="progress-orb">
         <svg viewBox="0 0 140 140">
           <circle class="track" cx="70" cy="70" r="${r}"/>
@@ -1537,8 +1563,9 @@ function pollResult(taskId) {
     try {
       const r = await fetch(`/result/${taskId}`);
       const d = await r.json();
-      if (d.status === "running") {
-        showProgress(d.progress || 0, d.stage || 0);
+      if (d.status === "running" || d.status === "translating") {
+        showProgress(d.progress || 0, d.stage || 0, d.status === "translating");
+        if (d.status === "translating") setStatus("running", "جاري ترجمة التقارير للعربية...");
         setTimeout(poll, 2000);
         return;
       }
