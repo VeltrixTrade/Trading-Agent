@@ -1602,9 +1602,6 @@ function populatePairs(filter) {
     tickerSelect.value = "EURUSD=X";
   }
 }
-populatePairs();
-setSpeedMode('quick');
-pairSearch.addEventListener("input", e => populatePairs(e.target.value));
 
 // ============================================
 // UTILITIES
@@ -2150,6 +2147,13 @@ document.addEventListener("keydown", e => {
     pairSearch.focus();
   }
 });
+
+// ============================================
+// INITIALIZATION
+// ============================================
+populatePairs();
+setSpeedMode('quick');
+pairSearch.addEventListener("input", e => populatePairs(e.target.value));
 </script>
 </body>
 </html>
