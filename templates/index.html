@@ -4,361 +4,1024 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TradingAgents — منصة التحليل الذكي بالذكاء الاصطناعي</title>
+<meta name="description" content="منصة تحليل الأسواق المالية بالذكاء الاصطناعي - تحليل فني وأساسي متكامل للعملات والأسهم والعملات الرقمية">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-/* ============================================================
-   TradingAgents — Professional Trading Dashboard
-   ============================================================ */
+/* ============================================
+   DESIGN SYSTEM
+   ============================================ */
 :root {
-  --bg-deep: #060b14;
-  --bg-primary: #0a0f1a;
-  --bg-surface: #0e1420;
-  --bg-card: #131b2b;
-  --bg-card-hover: #1a2337;
-  --border: #1e2a42;
-  --border-light: #2a3a58;
-  --accent-primary: #00d4aa;
-  --accent-secondary: #f59e0b;
-  --accent-danger: #ef4444;
-  --accent-info: #3b82f6;
-  --accent-purple: #8b5cf6;
-  --accent-cyan: #06b6d4;
-  --accent-gold: #d4af37;
-  --text-primary: #f0f2f5;
-  --text-secondary: #8892a8;
-  --text-muted: #5a6580;
+  --bg-deep: #04080f;
+  --bg-primary: #080d18;
+  --bg-surface: #0c1220;
+  --bg-card: #111827;
+  --bg-card-hover: #1a2340;
+  --bg-glass: rgba(17, 24, 39, 0.6);
+  --border: rgba(99, 102, 241, 0.12);
+  --border-light: rgba(99, 102, 241, 0.2);
+  --border-glow: rgba(0, 212, 170, 0.25);
+
+  --accent: #00d4aa;
+  --accent-light: #34ebc6;
+  --accent-dim: rgba(0, 212, 170, 0.15);
+  --accent2: #6366f1;
+  --accent2-dim: rgba(99, 102, 241, 0.15);
+  --accent3: #f59e0b;
+
   --success: #10b981;
   --danger: #ef4444;
   --warning: #f59e0b;
-  --info: #3b82f6;
-  --grad-buy: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
-  --grad-sell: linear-gradient(135deg, #ef4444 0%, #f97316 100%);
-  --grad-hold: linear-gradient(135deg, #f59e0b 0%, #eab308 100%);
-  --grad-primary: linear-gradient(135deg, #00d4aa 0%, #06b6d4 100%);
-  --grad-purple: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
+  --info: #6366f1;
+
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-muted: #475569;
+
+  --grad-main: linear-gradient(135deg, #00d4aa, #6366f1);
+  --grad-buy: linear-gradient(135deg, #10b981, #06b6d4);
+  --grad-sell: linear-gradient(135deg, #ef4444, #f97316);
+  --grad-hold: linear-gradient(135deg, #f59e0b, #eab308);
+  --grad-hero: linear-gradient(135deg, rgba(0,212,170,0.08), rgba(99,102,241,0.08));
+  --grad-card: linear-gradient(135deg, rgba(0,212,170,0.04), rgba(99,102,241,0.04));
+
   --shadow-sm: 0 2px 8px rgba(0,0,0,0.3);
-  --shadow-md: 0 4px 20px rgba(0,0,0,0.4);
-  --shadow-glow: 0 0 30px rgba(0,212,170,0.15);
-  --radius: 12px;
-  --radius-sm: 8px;
-  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --shadow-md: 0 8px 32px rgba(0,0,0,0.4);
+  --shadow-glow: 0 0 40px rgba(0,212,170,0.12);
+  --shadow-glow-strong: 0 0 60px rgba(0,212,170,0.2);
+
+  --radius: 16px;
+  --radius-sm: 10px;
+  --radius-xs: 6px;
+  --radius-full: 9999px;
+
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --transition: all 0.35s var(--ease);
 }
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
+/* ============================================
+   RESET & BASE
+   ============================================ */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 html { scroll-behavior: smooth; }
-body { 
-  font-family: 'Cairo', -apple-system, sans-serif; 
-  background: var(--bg-deep); 
-  color: var(--text-primary); 
-  min-height: 100vh; 
-  overflow-x: hidden; 
-  line-height: 1.6;
+body {
+  font-family: 'Cairo', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg-deep);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Scrollbar */
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: var(--bg-deep); }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: var(--border-light); }
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: var(--accent-light); }
 
-/* Animations */
-@keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes fadeInLeft { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
-@keyframes fadeInRight { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
-@keyframes pulse-glow { 0%,100%{box-shadow:0 0 0 0 rgba(0,212,170,0.4)} 50%{box-shadow:0 0 20px 5px rgba(0,212,170,0.1)} }
+::selection { background: var(--accent); color: var(--bg-deep); }
+
+/* ============================================
+   KEYFRAMES
+   ============================================ */
+@keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes scaleIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
 @keyframes spin { to { transform: rotate(360deg); } }
-@keyframes ticker { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
-@keyframes shimmer { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
-@keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes scaleIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+@keyframes glow-pulse { 0%, 100% { box-shadow: 0 0 20px rgba(0,212,170,0.15); } 50% { box-shadow: 0 0 40px rgba(0,212,170,0.3); } }
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+@keyframes orbit {
+  from { transform: rotate(0deg) translateX(120px) rotate(0deg); }
+  to { transform: rotate(360deg) translateX(120px) rotate(-360deg); }
+}
+@keyframes particle-float {
+  0%, 100% { transform: translateY(0) translateX(0); opacity: 0.3; }
+  25% { transform: translateY(-30px) translateX(10px); opacity: 0.8; }
+  50% { transform: translateY(-15px) translateX(-10px); opacity: 0.5; }
+  75% { transform: translateY(-40px) translateX(5px); opacity: 0.7; }
+}
+@keyframes text-glow {
+  0%, 100% { text-shadow: 0 0 10px rgba(0,212,170,0.3); }
+  50% { text-shadow: 0 0 25px rgba(0,212,170,0.6), 0 0 50px rgba(0,212,170,0.2); }
+}
+@keyframes border-glow {
+  0%, 100% { border-color: rgba(0,212,170,0.15); }
+  50% { border-color: rgba(0,212,170,0.4); }
+}
+@keyframes progress-wave {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
 
-.animate-fadeIn { animation: fadeIn 0.6s ease forwards; }
-.animate-slideUp { animation: slideUp 0.5s ease forwards; }
-.animate-scaleIn { animation: scaleIn 0.4s ease forwards; }
+/* ============================================
+   BACKGROUND EFFECTS
+   ============================================ */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% -20%, rgba(0,212,170,0.06), transparent),
+    radial-gradient(ellipse 60% 50% at 80% 100%, rgba(99,102,241,0.05), transparent),
+    radial-gradient(ellipse 50% 40% at 10% 60%, rgba(245,158,11,0.03), transparent);
+  pointer-events: none;
+  z-index: 0;
+}
 
-/* ============================================================
+.bg-grid {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image:
+    linear-gradient(rgba(99,102,241,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(99,102,241,0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ============================================
    HEADER
-   ============================================================ */
+   ============================================ */
 .header {
-  background: linear-gradient(180deg, var(--bg-surface) 0%, rgba(14,20,32,0.95) 100%);
-  border-bottom: 1px solid var(--border);
-  padding: 0 24px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 64px;
   position: sticky;
   top: 0;
   z-index: 100;
-  backdrop-filter: blur(20px);
+  background: rgba(8, 13, 24, 0.75);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border-bottom: 1px solid var(--border);
+  padding: 0 32px;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: var(--transition);
 }
-
-.logo { display: flex; align-items: center; gap: 12px; cursor: pointer; transition: var(--transition); }
-.logo:hover { transform: scale(1.02); }
-.logo-icon { 
-  width: 40px; height: 40px; 
-  background: var(--grad-primary); 
-  border-radius: 10px; 
-  display: flex; align-items: center; justify-content: center; 
-  font-size: 20px; font-weight: 900; color: #fff;
-  box-shadow: 0 4px 15px rgba(0,212,170,0.3);
+.header.scrolled {
+  background: rgba(8, 13, 24, 0.92);
+  box-shadow: 0 4px 30px rgba(0,0,0,0.3);
+}
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  text-decoration: none;
+}
+.logo-icon {
+  width: 44px; height: 44px;
+  background: var(--grad-main);
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; font-weight: 900; color: #fff;
+  box-shadow: 0 4px 20px rgba(0,212,170,0.3);
   position: relative;
   overflow: hidden;
+  transition: var(--transition);
 }
+.logo:hover .logo-icon { transform: scale(1.05) rotate(-3deg); box-shadow: 0 6px 25px rgba(0,212,170,0.4); }
 .logo-icon::after {
-  content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-  background: linear-gradient(135deg, transparent 40%, rgba(255,255,255,0.2) 50%, transparent 60%);
-  animation: shimmer 3s infinite;
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, transparent 30%, rgba(255,255,255,0.25) 50%, transparent 70%);
+  background-size: 200% 100%;
+  animation: shimmer 3s ease infinite;
 }
-.logo h1 { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; }
-.logo h1 span { color: var(--accent-primary); }
-.logo-tagline { font-size: 10px; color: var(--text-muted); font-weight: 500; margin-top: -2px; }
+.logo-text h1 { font-size: 22px; font-weight: 900; letter-spacing: -0.5px; line-height: 1.2; }
+.logo-text h1 span { background: var(--grad-main); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.logo-text .tagline { font-size: 10px; color: var(--text-muted); font-weight: 600; letter-spacing: 0.5px; }
 
-.header-right { display: flex; align-items: center; gap: 16px; }
-.market-status { 
-  display: flex; align-items: center; gap: 6px; 
-  font-size: 11px; color: var(--success); 
-  background: rgba(16,185,129,0.1); 
-  padding: 4px 12px; border-radius: 20px; border: 1px solid rgba(16,185,129,0.2);
-}
-.market-status::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--success); animation: pulse-glow 2s infinite; }
-.header-badge { font-size: 11px; color: var(--text-muted); background: var(--bg-card); padding: 5px 14px; border-radius: 20px; border: 1px solid var(--border); font-weight: 600; }
-
-/* ============================================================
-   NEWS TICKER
-   ============================================================ */
-.news-ticker {
-  background: var(--bg-primary);
-  border-bottom: 1px solid var(--border);
-  overflow: hidden;
-  height: 32px;
-  display: flex;
-  align-items: center;
-}
-.ticker-label {
-  background: var(--grad-primary);
-  color: #fff;
-  font-size: 10px;
-  font-weight: 700;
-  padding: 0 14px;
-  height: 100%;
-  display: flex; align-items: center;
-  flex-shrink: 0;
-  z-index: 2;
-}
-.ticker-wrap { flex: 1; overflow: hidden; position: relative; }
-.ticker-content {
-  display: flex;
-  gap: 48px;
-  animation: ticker 60s linear infinite;
-  white-space: nowrap;
-  padding: 0 20px;
+.header-actions { display: flex; align-items: center; gap: 12px; }
+.header-badge {
   font-size: 11px;
-  color: var(--text-secondary);
-}
-.ticker-item { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
-.ticker-item .symbol { color: var(--accent-primary); font-weight: 700; font-family: 'JetBrains Mono', monospace; }
-.ticker-item .change-up { color: var(--success); }
-.ticker-item .change-down { color: var(--danger); }
-
-/* ============================================================
-   CONTROLS BAR
-   ============================================================ */
-.controls-bar {
-  background: var(--bg-surface);
-  padding: 16px 24px;
-  display: flex;
-  gap: 16px;
-  align-items: center;
-  flex-wrap: wrap;
-  border-bottom: 1px solid var(--border);
-}
-
-.control-group { display: flex; flex-direction: column; gap: 5px; }
-.control-group label { font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-
-.select-styled {
-  padding: 9px 14px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border);
-  background: var(--bg-card);
-  color: var(--text-primary);
-  font-size: 13px;
-  font-family: inherit;
-  cursor: pointer;
-  min-width: 180px;
-  transition: var(--transition);
-  outline: none;
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238892a8' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: left 12px center;
-  padding-left: 32px;
-}
-.select-styled:focus { border-color: var(--accent-primary); box-shadow: 0 0 0 3px rgba(0,212,170,0.1); }
-.select-styled:hover { border-color: var(--border-light); background: var(--bg-card-hover); }
-
-/* Search input for pairs */
-.search-pairs {
-  padding: 9px 14px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border);
-  background: var(--bg-card);
-  color: var(--text-primary);
-  font-size: 13px;
-  font-family: inherit;
-  min-width: 200px;
-  transition: var(--transition);
-  outline: none;
-}
-.search-pairs:focus { border-color: var(--accent-primary); box-shadow: 0 0 0 3px rgba(0,212,170,0.1); }
-.search-pairs::placeholder { color: var(--text-muted); }
-
-.btn-analyze {
-  padding: 10px 32px;
-  border: none;
-  border-radius: var(--radius-sm);
-  background: var(--grad-primary);
-  color: #fff;
-  font-size: 14px;
+  color: var(--accent);
+  background: var(--accent-dim);
+  padding: 6px 16px;
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(0,212,170,0.2);
   font-weight: 700;
-  font-family: inherit;
-  cursor: pointer;
+  letter-spacing: 0.3px;
+  display: flex; align-items: center; gap: 6px;
+}
+.header-badge .dot {
+  width: 6px; height: 6px;
+  background: var(--accent);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+.nav-link {
+  font-size: 13px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
   transition: var(--transition);
-  box-shadow: 0 4px 20px rgba(0,212,170,0.25);
-  display: flex; align-items: center; gap: 8px;
-  text-transform: uppercase;
+  cursor: pointer;
+}
+.nav-link:hover { color: var(--accent); background: var(--accent-dim); }
+.nav-link.active { color: var(--accent); background: var(--accent-dim); }
+
+/* ============================================
+   HERO SECTION
+   ============================================ */
+.hero {
+  position: relative;
+  padding: 80px 32px 60px;
+  text-align: center;
+  overflow: hidden;
+  z-index: 1;
+}
+.hero-glow {
+  position: absolute;
+  width: 500px; height: 500px;
+  border-radius: 50%;
+  filter: blur(120px);
+  opacity: 0.15;
+  pointer-events: none;
+}
+.hero-glow.g1 { top: -150px; right: 10%; background: var(--accent); }
+.hero-glow.g2 { bottom: -100px; left: 10%; background: var(--accent2); }
+
+.hero-particles {
+  position: absolute; inset: 0;
+  pointer-events: none; overflow: hidden;
+}
+.hero-particle {
+  position: absolute;
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0.3;
+}
+.hero-particle:nth-child(1) { top: 20%; left: 15%; animation: particle-float 6s ease infinite 0s; }
+.hero-particle:nth-child(2) { top: 40%; left: 80%; animation: particle-float 8s ease infinite 1s; width: 3px; height: 3px; background: var(--accent2); }
+.hero-particle:nth-child(3) { top: 70%; left: 30%; animation: particle-float 7s ease infinite 2s; width: 5px; height: 5px; }
+.hero-particle:nth-child(4) { top: 30%; left: 60%; animation: particle-float 9s ease infinite 0.5s; width: 3px; height: 3px; background: var(--accent3); }
+.hero-particle:nth-child(5) { top: 80%; left: 70%; animation: particle-float 6s ease infinite 3s; }
+.hero-particle:nth-child(6) { top: 10%; left: 45%; animation: particle-float 10s ease infinite 1.5s; width: 6px; height: 6px; background: var(--accent2); opacity: 0.2; }
+
+.hero-content { position: relative; z-index: 2; max-width: 800px; margin: 0 auto; animation: fadeIn 0.8s var(--ease); }
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center; gap: 8px;
+  font-size: 12px; font-weight: 700;
+  color: var(--accent);
+  background: var(--accent-dim);
+  padding: 8px 20px;
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(0,212,170,0.2);
+  margin-bottom: 24px;
   letter-spacing: 0.5px;
-  margin-top: 17px;
 }
-.btn-analyze:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,212,170,0.35); }
-.btn-analyze:active { transform: translateY(0); }
-.btn-analyze:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
-.btn-analyze .spinner { width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.8s linear infinite; display: none; }
-.btn-analyze.loading .spinner { display: inline-block; }
-.btn-analyze.loading .btn-text { display: none; }
+.hero-title {
+  font-size: clamp(32px, 5vw, 56px);
+  font-weight: 900;
+  line-height: 1.2;
+  margin-bottom: 16px;
+  letter-spacing: -1px;
+}
+.hero-title .gradient-text {
+  background: var(--grad-main);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradient-shift 4s ease infinite;
+}
+.hero-desc {
+  font-size: clamp(15px, 2vw, 18px);
+  color: var(--text-secondary);
+  max-width: 600px;
+  margin: 0 auto 40px;
+  line-height: 1.8;
+}
+.hero-stats {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+.hero-stat {
+  text-align: center;
+  animation: fadeIn 0.8s var(--ease) backwards;
+}
+.hero-stat:nth-child(1) { animation-delay: 0.2s; }
+.hero-stat:nth-child(2) { animation-delay: 0.4s; }
+.hero-stat:nth-child(3) { animation-delay: 0.6s; }
+.hero-stat .num {
+  font-size: 28px;
+  font-weight: 900;
+  background: var(--grad-main);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-family: 'JetBrains Mono', monospace;
+}
+.hero-stat .stat-label { font-size: 12px; color: var(--text-muted); font-weight: 600; }
 
-.status-badge {
-  font-size: 11px; padding: 5px 14px; border-radius: 20px;
-  background: var(--bg-card); color: var(--text-muted);
-  border: 1px solid var(--border); transition: var(--transition);
-  font-weight: 600; margin-top: 17px;
+/* ============================================
+   STAGE CARDS (How It Works)
+   ============================================ */
+.stages-section {
+  position: relative;
+  z-index: 1;
+  padding: 0 32px 60px;
+  max-width: 1200px;
+  margin: 0 auto;
 }
-.status-badge.running { background: rgba(0,212,170,0.1); color: var(--accent-primary); border-color: var(--accent-primary); animation: pulse-glow 2s infinite; }
-.status-badge.done { background: rgba(16,185,129,0.1); color: var(--success); border-color: var(--success); }
-.status-badge.error { background: rgba(239,68,68,0.1); color: var(--danger); border-color: var(--danger); }
+.section-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+.section-header h2 {
+  font-size: 24px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+.section-header p {
+  font-size: 14px;
+  color: var(--text-muted);
+}
+.stages-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+}
+.stage-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px 16px;
+  text-align: center;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+  animation: slideUp 0.6s var(--ease) backwards;
+}
+.stage-card:nth-child(1) { animation-delay: 0.1s; }
+.stage-card:nth-child(2) { animation-delay: 0.2s; }
+.stage-card:nth-child(3) { animation-delay: 0.3s; }
+.stage-card:nth-child(4) { animation-delay: 0.4s; }
+.stage-card:nth-child(5) { animation-delay: 0.5s; }
+.stage-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--grad-card);
+  opacity: 0;
+  transition: var(--transition);
+}
+.stage-card:hover {
+  border-color: var(--border-glow);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-glow);
+}
+.stage-card:hover::before { opacity: 1; }
+.stage-num {
+  position: relative; z-index: 1;
+  width: 36px; height: 36px;
+  background: var(--accent-dim);
+  border: 1px solid rgba(0,212,170,0.2);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 800;
+  color: var(--accent);
+  margin: 0 auto 12px;
+  font-family: 'JetBrains Mono', monospace;
+}
+.stage-icon {
+  position: relative; z-index: 1;
+  font-size: 28px;
+  margin-bottom: 10px;
+}
+.stage-title {
+  position: relative; z-index: 1;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.5;
+}
 
-/* ============================================================
-   AGENT SELECTOR
-   ============================================================ */
-.agent-selector {
-  background: var(--bg-primary);
-  border-bottom: 1px solid var(--border);
-  padding: 16px 24px;
+/* ============================================
+   ANALYSIS FORM
+   ============================================ */
+.analysis-section {
+  position: relative;
+  z-index: 1;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 32px 60px;
 }
-.agent-selector-title {
-  font-size: 12px; color: var(--text-muted); font-weight: 600;
-  text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px;
+.analysis-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 32px;
+  position: relative;
+  overflow: hidden;
+  animation: scaleIn 0.5s var(--ease);
 }
-.agent-cards {
-  display: flex; gap: 10px;
-  overflow-x: auto;
-  padding-bottom: 4px;
+.analysis-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--grad-main);
 }
-.agent-cards::-webkit-scrollbar { height: 4px; }
-.agent-cards::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.analysis-card-title {
+  font-size: 20px;
+  font-weight: 800;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.analysis-card-desc {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 28px;
+}
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+.form-group { display: flex; flex-direction: column; gap: 8px; }
+.form-group.full-width { grid-column: 1 / -1; }
+.form-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.form-label .icon { font-size: 14px; }
 
-.agent-card-select {
-  flex-shrink: 0;
+.form-input, .form-select {
   padding: 12px 16px;
   border-radius: var(--radius-sm);
   border: 1px solid var(--border);
-  background: var(--bg-card);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  font-size: 14px;
+  font-family: 'Cairo', sans-serif;
+  font-weight: 600;
+  outline: none;
+  transition: var(--transition);
+  width: 100%;
+  appearance: none;
+  -webkit-appearance: none;
+}
+.form-select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%2394a3b8' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: 16px center;
+  padding-left: 36px;
+}
+.form-input:focus, .form-select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-dim), var(--shadow-glow);
+}
+.form-input::placeholder { color: var(--text-muted); font-weight: 500; }
+
+.search-wrapper {
+  position: relative;
+}
+.search-wrapper .search-icon {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 14px;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+.search-wrapper .form-input { padding-right: 38px; }
+
+.btn-analyze {
+  width: 100%;
+  padding: 14px 32px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--grad-main);
+  background-size: 200% 200%;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 800;
+  font-family: 'Cairo', sans-serif;
   cursor: pointer;
   transition: var(--transition);
-  display: flex; align-items: center; gap: 10px;
-  min-width: 180px;
+  box-shadow: 0 4px 25px rgba(0,212,170,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  position: relative;
+  overflow: hidden;
 }
-.agent-card-select:hover { border-color: var(--border-light); background: var(--bg-card-hover); transform: translateY(-1px); }
-.agent-card-select.active {
-  border-color: var(--accent-primary);
-  background: linear-gradient(135deg, rgba(0,212,170,0.1) 0%, rgba(6,182,212,0.05) 100%);
-  box-shadow: 0 0 20px rgba(0,212,170,0.1);
-}
-.agent-card-select .agent-icon { 
-  width: 36px; height: 36px; border-radius: 10px; 
-  display: flex; align-items: center; justify-content: center; 
-  font-size: 16px; background: rgba(255,255,255,0.05);
-}
-.agent-card-select .agent-info { display: flex; flex-direction: column; gap: 2px; }
-.agent-card-select .agent-name { font-size: 13px; font-weight: 700; color: var(--text-primary); }
-.agent-card-select .agent-desc { font-size: 10px; color: var(--text-muted); }
-.agent-card-select .agent-check {
-  margin-right: auto; width: 18px; height: 18px; border-radius: 50%;
-  border: 2px solid var(--border); display: flex; align-items: center; justify-content: center;
-  transition: var(--transition); font-size: 10px; color: transparent;
-}
-.agent-card-select.active .agent-check { background: var(--accent-primary); border-color: var(--accent-primary); color: #fff; }
-
-/* ============================================================
-   MAIN LAYOUT
-   ============================================================ */
-.main-layout { display: flex; height: calc(100vh - 64px - 32px - 73px - 89px); position: relative; }
-
-/* Left Panel — Results */
-.results-panel {
-  width: 460px; min-width: 360px; max-width: 520px;
-  background: var(--bg-surface);
-  border-left: 1px solid var(--border);
-  overflow-y: auto;
-  display: flex; flex-direction: column;
+.btn-analyze::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, transparent 30%, rgba(255,255,255,0.15) 50%, transparent 70%);
+  background-size: 200% 100%;
+  opacity: 0;
   transition: var(--transition);
 }
-.results-panel.collapsed { width: 0; min-width: 0; overflow: hidden; border: none; }
+.btn-analyze:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 40px rgba(0,212,170,0.4);
+  background-size: 100% 100%;
+}
+.btn-analyze:hover::after { opacity: 1; animation: shimmer 1.5s ease; }
+.btn-analyze:active { transform: translateY(0); }
+.btn-analyze:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+.btn-analyze .spinner {
+  width: 20px; height: 20px;
+  border: 2.5px solid rgba(255,255,255,0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: none;
+}
+.btn-analyze.loading .spinner { display: inline-block; }
+.btn-analyze.loading .btn-text { display: none; }
 
-.panel-header {
-  padding: 16px 20px;
+.status-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 16px;
+  padding: 10px 16px;
+  background: var(--bg-surface);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+}
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+.status-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  transition: var(--transition);
+}
+.status-dot.running { background: var(--accent); animation: pulse 1.5s infinite; }
+.status-dot.done { background: var(--success); }
+.status-dot.error { background: var(--danger); }
+.status-text { transition: var(--transition); }
+
+.shortcut-hint {
+  font-size: 11px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.kbd {
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  font-size: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--text-secondary);
+}
+
+/* ============================================
+   RESULTS SECTION
+   ============================================ */
+.results-section {
+  position: relative;
+  z-index: 1;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 32px 80px;
+}
+
+/* --- Progress View --- */
+.progress-view {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 60px 20px;
+  animation: fadeIn 0.5s var(--ease);
+}
+.progress-orb {
+  width: 160px; height: 160px;
+  position: relative;
+  margin-bottom: 32px;
+}
+.progress-orb svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.progress-orb .track { fill: none; stroke: var(--border); stroke-width: 4; }
+.progress-orb .fill {
+  fill: none; stroke: url(#progGrad); stroke-width: 4;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 1s ease;
+  filter: drop-shadow(0 0 8px rgba(0,212,170,0.4));
+}
+.progress-orb .pct-text {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 36px;
+  font-weight: 900;
+  font-family: 'JetBrains Mono', monospace;
+  background: var(--grad-main);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.progress-timer {
+  font-size: 48px;
+  font-weight: 800;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+  letter-spacing: 3px;
+  animation: text-glow 3s ease infinite;
+}
+.progress-stage-label {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 28px;
+}
+.progress-track {
+  width: 100%;
+  max-width: 500px;
+  margin-bottom: 24px;
+}
+.progress-bar-bg {
+  width: 100%;
+  height: 6px;
+  background: var(--bg-card);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+.progress-bar-fill {
+  height: 100%;
+  background: var(--grad-main);
+  border-radius: var(--radius-full);
+  transition: width 0.8s ease;
+  position: relative;
+}
+.progress-bar-fill::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  animation: progress-wave 2s ease infinite;
+}
+.stage-pills {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.stage-pill {
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  font-size: 11px;
+  font-weight: 700;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  transition: var(--transition);
+}
+.stage-pill.active {
+  background: var(--accent-dim);
+  border-color: rgba(0,212,170,0.3);
+  color: var(--accent);
+  animation: border-glow 2s ease infinite;
+}
+.stage-pill.done {
+  background: rgba(16,185,129,0.1);
+  border-color: rgba(16,185,129,0.3);
+  color: var(--success);
+}
+
+/* --- Decision Banner --- */
+.decision-banner {
+  border-radius: var(--radius);
+  padding: 40px 32px;
+  text-align: center;
+  margin-bottom: 28px;
+  position: relative;
+  overflow: hidden;
+  animation: scaleIn 0.6s var(--ease-bounce);
+}
+.decision-banner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.4;
+  pointer-events: none;
+}
+.decision-banner.buy {
+  background: linear-gradient(135deg, rgba(16,185,129,0.12), rgba(6,182,212,0.06));
+  border: 1px solid rgba(16,185,129,0.25);
+  box-shadow: 0 0 60px rgba(16,185,129,0.08);
+}
+.decision-banner.sell {
+  background: linear-gradient(135deg, rgba(239,68,68,0.12), rgba(249,115,22,0.06));
+  border: 1px solid rgba(239,68,68,0.25);
+  box-shadow: 0 0 60px rgba(239,68,68,0.08);
+}
+.decision-banner.hold {
+  background: linear-gradient(135deg, rgba(245,158,11,0.12), rgba(234,179,8,0.06));
+  border: 1px solid rgba(245,158,11,0.25);
+  box-shadow: 0 0 60px rgba(245,158,11,0.08);
+}
+.decision-emoji { font-size: 64px; margin-bottom: 12px; animation: float 3s ease infinite; }
+.decision-action {
+  font-size: clamp(36px, 6vw, 56px);
+  font-weight: 900;
+  letter-spacing: 6px;
+  text-transform: uppercase;
+}
+.decision-banner.buy .decision-action { color: var(--success); }
+.decision-banner.sell .decision-action { color: var(--danger); }
+.decision-banner.hold .decision-action { color: var(--warning); }
+.decision-subtitle {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-top: 6px;
+  font-weight: 500;
+}
+.decision-badges {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+.decision-badge {
+  padding: 6px 18px;
+  border-radius: var(--radius-full);
+  font-size: 12px;
+  font-weight: 700;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: var(--text-secondary);
+  backdrop-filter: blur(10px);
+}
+
+/* --- Entry Zones --- */
+.zones-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 28px;
+  animation: slideUp 0.6s var(--ease) 0.2s backwards;
+}
+.zone-card {
+  border-radius: var(--radius);
+  padding: 24px 16px;
+  text-align: center;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+.zone-card:hover { transform: translateY(-3px); }
+.zone-card.buy {
+  background: linear-gradient(135deg, rgba(16,185,129,0.08), rgba(6,182,212,0.04));
+  border: 1px solid rgba(16,185,129,0.15);
+}
+.zone-card.buy:hover { border-color: rgba(16,185,129,0.35); box-shadow: 0 8px 30px rgba(16,185,129,0.1); }
+.zone-card.sell {
+  background: linear-gradient(135deg, rgba(239,68,68,0.08), rgba(249,115,22,0.04));
+  border: 1px solid rgba(239,68,68,0.15);
+}
+.zone-card.sell:hover { border-color: rgba(239,68,68,0.35); box-shadow: 0 8px 30px rgba(239,68,68,0.1); }
+.zone-card.neutral {
+  background: linear-gradient(135deg, rgba(245,158,11,0.08), rgba(234,179,8,0.04));
+  border: 1px solid rgba(245,158,11,0.15);
+}
+.zone-card.neutral:hover { border-color: rgba(245,158,11,0.35); box-shadow: 0 8px 30px rgba(245,158,11,0.1); }
+.zone-icon { font-size: 32px; margin-bottom: 6px; }
+.zone-label { font-size: 11px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+.zone-value {
+  font-size: 20px;
+  font-weight: 800;
+  font-family: 'JetBrains Mono', monospace;
+  margin-top: 6px;
+}
+.zone-card.buy .zone-value { color: var(--success); }
+.zone-card.sell .zone-value { color: var(--danger); }
+.zone-card.neutral .zone-value { color: var(--warning); }
+
+/* --- Report Sections --- */
+.report-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 20px;
+  overflow: hidden;
+  transition: var(--transition);
+  animation: slideUp 0.5s var(--ease) backwards;
+}
+.report-card:hover { border-color: var(--border-light); }
+.report-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 24px;
   border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: space-between;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.report-header:hover { background: rgba(255,255,255,0.02); }
+.report-accent {
+  width: 4px;
+  height: 28px;
+  border-radius: 2px;
   flex-shrink: 0;
-  background: linear-gradient(90deg, var(--bg-card) 0%, transparent 100%);
 }
-.panel-title { font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
-.panel-title .icon { font-size: 16px; }
-.panel-actions { display: flex; gap: 6px; }
-.panel-btn {
-  width: 28px; height: 28px; border-radius: 6px;
-  border: 1px solid var(--border); background: var(--bg-card);
-  color: var(--text-secondary); cursor: pointer;
+.report-header h3 {
+  font-size: 15px;
+  font-weight: 700;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.report-toggle {
+  width: 28px; height: 28px;
+  border-radius: 8px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
   display: flex; align-items: center; justify-content: center;
-  font-size: 12px; transition: var(--transition);
+  font-size: 12px;
+  color: var(--text-muted);
+  transition: var(--transition);
+  flex-shrink: 0;
 }
-.panel-btn:hover { background: var(--bg-card-hover); color: var(--text-primary); border-color: var(--border-light); }
-
-.panel-body { flex: 1; overflow-y: auto; padding: 16px; }
-
-/* Right Panel — Chart */
-.chart-panel { flex: 1; min-width: 0; position: relative; height: 100%; background: var(--bg-deep); }
-#tvchart { width: 100%; height: 100%; position: absolute; top: 0; left: 0; }
-.chart-loading {
-  position: absolute; inset: 0;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  color: var(--text-secondary); gap: 16px; z-index: 10;
+.report-card.open .report-toggle { transform: rotate(180deg); background: var(--accent-dim); color: var(--accent); }
+.report-body {
+  padding: 0 24px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s var(--ease), padding 0.4s var(--ease);
 }
-.chart-loading .spinner-large {
-  width: 40px; height: 40px;
-  border: 3px solid var(--border); border-top-color: var(--accent-primary);
-  border-radius: 50%; animation: spin 1s linear infinite;
+.report-card.open .report-body {
+  padding: 20px 24px;
+  max-height: 2000px;
+}
+.report-text {
+  font-size: 14px;
+  line-height: 2;
+  color: var(--text-secondary);
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
-/* ============================================================
-   PLACEHOLDER
-   ============================================================ */
-.placeholder-view {
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  height: 100%; color: var(--text-muted); text-align: center; gap: 20px;
-  padding: 40px 20px;
+/* --- Agent Reports Tabs --- */
+.agents-container {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-bottom: 20px;
+  animation: slideUp 0.5s var(--ease) backwards;
+}
+.agents-header {
+  padding: 18px 24px;
+  border-bottom: 1px solid var(--border);
+}
+.agents-header h3 {
+  font-size: 15px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.agents-tabs {
+  display: flex;
+  gap: 0;
+  overflow-x: auto;
+  border-bottom: 1px solid var(--border);
+  scrollbar-width: none;
+}
+.agents-tabs::-webkit-scrollbar { display: none; }
+.agent-tab {
+  flex-shrink: 0;
+  padding: 12px 20px;
+  font-size: 13px;
+  font-weight: 700;
+  font-family: 'Cairo', sans-serif;
+  color: var(--text-muted);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+.agent-tab:hover { color: var(--text-secondary); background: rgba(255,255,255,0.02); }
+.agent-tab.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+  background: var(--accent-dim);
+}
+.agent-tab-panel {
+  display: none;
+  padding: 24px;
+  font-size: 14px;
+  line-height: 2;
+  color: var(--text-secondary);
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  max-height: 500px;
+  overflow-y: auto;
+}
+.agent-tab-panel.active { display: block; animation: fadeIn 0.3s var(--ease); }
+
+/* --- Debate & Risk Sections --- */
+.debate-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 18px 20px;
+  margin-bottom: 12px;
+  transition: var(--transition);
+}
+.debate-card:hover { border-color: var(--border-light); }
+.debate-card-header {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.debate-card-body {
+  font-size: 13px;
+  line-height: 1.9;
+  color: var(--text-secondary);
+  white-space: pre-wrap;
+}
+
+/* --- Result Footer --- */
+.result-footer {
+  text-align: center;
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.footer-badge {
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+/* --- Placeholder --- */
+.placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 60px 20px;
+  gap: 12px;
+  animation: fadeIn 0.5s var(--ease);
 }
 .placeholder-icon {
   width: 80px; height: 80px;
@@ -366,842 +1029,514 @@ body {
   border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
   font-size: 32px;
-  animation: pulse-glow 3s infinite;
 }
-.placeholder-title { font-size: 16px; font-weight: 700; color: var(--text-secondary); }
-.placeholder-desc { font-size: 13px; color: var(--text-muted); max-width: 280px; line-height: 1.8; }
-
-/* ============================================================
-   PROGRESS VIEW
-   ============================================================ */
-.progress-view {
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  height: 100%; padding: 40px 20px; text-align: center;
+.placeholder-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--text-secondary);
 }
-
-.progress-ring-container {
-  width: 140px; height: 140px;
-  position: relative; margin-bottom: 28px;
-}
-.progress-ring-container svg { transform: rotate(-90deg); width: 100%; height: 100%; }
-.progress-ring-container .bg { fill: none; stroke: var(--border); stroke-width: 5; }
-.progress-ring-container .fill {
-  fill: none; stroke: url(#progGrad); stroke-width: 5;
-  stroke-linecap: round; transition: stroke-dashoffset 1s ease;
-}
-.progress-ring-container .pct {
-  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-  font-size: 28px; font-weight: 800; color: var(--text-primary);
-  font-family: 'JetBrains Mono', monospace;
-}
-.progress-ring-container .pct-label {
-  position: absolute; top: 50%; left: 50%; transform: translate(-50%, 14px);
-  font-size: 10px; color: var(--text-muted); font-weight: 600;
+.placeholder-desc {
+  font-size: 14px;
+  color: var(--text-muted);
+  max-width: 400px;
 }
 
-.progress-timer {
-  font-size: 36px; font-weight: 700;
-  font-family: 'JetBrains Mono', monospace;
-  color: var(--text-primary); margin-bottom: 4px;
-  letter-spacing: 2px;
-}
-.progress-stage {
-  font-size: 16px; font-weight: 700; margin-bottom: 4px;
-  background: var(--grad-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-}
-.progress-sub { font-size: 12px; color: var(--text-muted); margin-bottom: 20px; }
-
-.progress-bar-outer {
-  width: 100%; max-width: 320px; height: 4px;
-  background: var(--border); border-radius: 2px; overflow: hidden; margin-bottom: 16px;
-}
-.progress-bar-inner {
-  height: 100%; background: var(--grad-primary); border-radius: 2px;
-  transition: width 0.5s ease; position: relative;
-}
-.progress-bar-inner::after {
-  content: ''; position: absolute; top: 0; right: 0; bottom: 0;
-  width: 40px; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3));
-  animation: shimmer 2s infinite;
-}
-
-.stage-track {
-  display: flex; gap: 8px; align-items: center;
-  justify-content: center; flex-wrap: wrap;
-}
-.stage-pill {
-  padding: 5px 12px; border-radius: 20px;
-  font-size: 10px; font-weight: 600;
-  background: var(--bg-card); border: 1px solid var(--border);
-  color: var(--text-muted); transition: var(--transition);
-}
-.stage-pill.active { background: rgba(0,212,170,0.1); border-color: var(--accent-primary); color: var(--accent-primary); box-shadow: 0 0 10px rgba(0,212,170,0.1); }
-.stage-pill.done { background: rgba(16,185,129,0.1); border-color: var(--success); color: var(--success); }
-
-/* Agent avatars in progress */
-.progress-agents {
-  display: flex; gap: -8px; margin-top: 24px; justify-content: center;
-}
-.progress-agent-avatar {
-  width: 36px; height: 36px; border-radius: 50%;
-  border: 2px solid var(--bg-surface);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 14px; background: var(--bg-card);
-  margin-left: -8px; transition: var(--transition);
+/* --- App Footer --- */
+.app-footer {
   position: relative;
-}
-.progress-agent-avatar.active { border-color: var(--accent-primary); transform: scale(1.1); z-index: 1; box-shadow: 0 0 15px rgba(0,212,170,0.2); }
-.progress-agent-avatar.done { border-color: var(--success); opacity: 0.7; }
-
-/* ============================================================
-   RESULT CARDS
-   ============================================================ */
-.result-card {
-  background: var(--bg-card);
-  border-radius: var(--radius);
-  border: 1px solid var(--border);
-  margin-bottom: 12px;
-  overflow: hidden;
-  transition: var(--transition);
-  animation: fadeIn 0.5s ease forwards;
-}
-.result-card:hover { border-color: var(--border-light); transform: translateY(-1px); box-shadow: var(--shadow-sm); }
-.result-card.highlight { border-color: var(--accent-primary); box-shadow: var(--shadow-glow); }
-
-.result-card-header {
-  padding: 14px 16px;
-  display: flex; align-items: center; justify-content: space-between;
-  border-bottom: 1px solid var(--border);
-  cursor: pointer;
-  transition: var(--transition);
-}
-.result-card-header:hover { background: var(--bg-card-hover); }
-.result-card-header .left { display: flex; align-items: center; gap: 10px; }
-.result-card-header .icon {
-  width: 32px; height: 32px; border-radius: 8px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 14px; background: rgba(255,255,255,0.05);
-}
-.result-card-header .title { font-size: 13px; font-weight: 700; }
-.result-card-header .subtitle { font-size: 10px; color: var(--text-muted); }
-.result-card-header .toggle { font-size: 10px; color: var(--text-muted); transition: var(--transition); }
-.result-card.expanded .toggle { transform: rotate(180deg); }
-
-.result-card-body {
-  padding: 14px 16px;
-  font-size: 13px; line-height: 1.8; color: var(--text-secondary);
-  white-space: pre-wrap;
-  max-height: 0; overflow: hidden; transition: max-height 0.4s ease, padding 0.4s ease;
-}
-.result-card.expanded .result-card-body { max-height: 2000px; padding: 14px 16px; }
-.result-card-body p { margin-bottom: 8px; }
-.result-card-body p:last-child { margin-bottom: 0; }
-
-/* Decision Card */
-.decision-card {
-  background: linear-gradient(135deg, rgba(0,212,170,0.08) 0%, rgba(6,182,212,0.03) 100%);
-  border: 1px solid rgba(0,212,170,0.2);
-  border-radius: var(--radius);
-  padding: 20px;
+  z-index: 1;
   text-align: center;
-  margin-bottom: 16px;
-  position: relative;
-  overflow: hidden;
+  padding: 32px;
+  border-top: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 600;
 }
-.decision-card::before {
-  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
-  background: var(--grad-primary);
-}
-.decision-emoji { font-size: 40px; margin-bottom: 8px; }
-.decision-text {
-  font-size: 28px; font-weight: 900; letter-spacing: 2px;
-  text-transform: uppercase;
-}
-.decision-text.buy { color: var(--success); }
-.decision-text.sell { color: var(--danger); }
-.decision-text.hold { color: var(--warning); }
-.decision-sub {
-  font-size: 12px; color: var(--text-muted); margin-top: 6px;
-  font-weight: 500;
-}
+.app-footer span { color: var(--accent); }
 
-.confidence-meter {
-  margin-top: 12px;
-  display: flex; flex-direction: column; gap: 6px;
-}
-.confidence-label { font-size: 11px; color: var(--text-muted); font-weight: 600; }
-.confidence-track {
-  height: 8px; border-radius: 4px; background: var(--border); overflow: hidden;
-}
-.confidence-fill {
-  height: 100%; border-radius: 4px;
-  background: var(--grad-primary); transition: width 1s ease;
-  position: relative;
-}
-.confidence-fill::after {
-  content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 30px;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3));
-}
-.confidence-value { font-size: 12px; color: var(--accent-primary); font-weight: 700; font-family: 'JetBrains Mono', monospace; }
-
-/* Entry Points Card */
-.entry-card {
-  background: linear-gradient(135deg, rgba(16,185,129,0.05) 0%, rgba(6,182,212,0.02) 100%);
-  border: 1px solid rgba(16,185,129,0.15);
-  border-radius: var(--radius);
-  padding: 16px;
-  margin-bottom: 12px;
-}
-.entry-card-header { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
-.entry-card-header .icon { font-size: 18px; }
-.entry-card-header .title { font-size: 14px; font-weight: 700; color: var(--success); }
-
-.entry-row {
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 8px 0; border-bottom: 1px solid var(--border);
-}
-.entry-row:last-child { border-bottom: none; }
-.entry-label { font-size: 12px; color: var(--text-muted); }
-.entry-value { font-size: 14px; font-weight: 700; font-family: 'JetBrains Mono', monospace; color: var(--text-primary); }
-.entry-value.buy { color: var(--success); }
-.entry-value.sell { color: var(--danger); }
-
-/* Agent Report Cards */
-.agent-report-grid {
-  display: grid; gap: 10px;
-}
-
-.agent-report-card {
-  background: var(--bg-card);
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border);
-  padding: 14px;
-  transition: var(--transition);
-  animation: slideUp 0.4s ease forwards;
-}
-.agent-report-card:hover { border-color: var(--border-light); }
-.agent-report-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-.agent-report-avatar {
-  width: 36px; height: 36px; border-radius: 10px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 16px;
-  position: relative;
-}
-.agent-report-avatar .status-dot {
-  position: absolute; bottom: -2px; right: -2px;
-  width: 10px; height: 10px; border-radius: 50%;
-  border: 2px solid var(--bg-card);
-}
-.agent-report-avatar .status-dot.active { background: var(--success); }
-.agent-report-name { font-size: 13px; font-weight: 700; }
-.agent-report-role { font-size: 10px; color: var(--text-muted); }
-.agent-report-body { font-size: 12px; line-height: 1.7; color: var(--text-secondary); white-space: pre-wrap; }
-
-/* Debate Section */
-.debate-section { margin-top: 12px; }
-.debate-card {
-  background: var(--bg-card);
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border);
-  padding: 14px;
-  margin-bottom: 10px;
-}
-.debate-header {
-  display: flex; align-items: center; gap: 8px; margin-bottom: 10px;
-  padding-bottom: 10px; border-bottom: 1px solid var(--border);
-}
-.debate-avatar {
-  width: 32px; height: 32px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 14px; border: 2px solid var(--border);
-}
-.debate-name { font-size: 13px; font-weight: 700; }
-.debate-role { font-size: 10px; color: var(--text-muted); }
-.debate-body { font-size: 12px; line-height: 1.7; color: var(--text-secondary); white-space: pre-wrap; }
-
-.debate-bull .debate-avatar { border-color: var(--success); background: rgba(16,185,129,0.1); }
-.debate-bull .debate-name { color: var(--success); }
-.debate-bear .debate-avatar { border-color: var(--danger); background: rgba(239,68,68,0.1); }
-.debate-bear .debate-name { color: var(--danger); }
-.debate-judge .debate-avatar { border-color: var(--warning); background: rgba(245,158,11,0.1); }
-.debate-judge .debate-name { color: var(--warning); }
-
-/* Risk Section */
-.risk-conservative .debate-avatar { border-color: var(--info); background: rgba(59,130,246,0.1); }
-.risk-conservative .debate-name { color: var(--info); }
-.risk-neutral .debate-avatar { border-color: var(--accent-purple); background: rgba(139,92,246,0.1); }
-.risk-neutral .debate-name { color: var(--accent-purple); }
-.risk-aggressive .debate-avatar { border-color: var(--danger); background: rgba(239,68,68,0.1); }
-.risk-aggressive .debate-name { color: var(--danger); }
-
-/* ============================================================
-   MARKET SUMMARY BAR
-   ============================================================ */
-.market-summary {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px;
-  margin-bottom: 16px;
-}
-.market-summary-item {
-  background: var(--bg-card); border-radius: var(--radius-sm);
-  border: 1px solid var(--border); padding: 10px 12px;
-  text-align: center; transition: var(--transition);
-}
-.market-summary-item:hover { border-color: var(--border-light); }
-.market-summary-item .label { font-size: 10px; color: var(--text-muted); font-weight: 600; margin-bottom: 4px; }
-.market-summary-item .value { font-size: 16px; font-weight: 700; font-family: 'JetBrains Mono', monospace; }
-.market-summary-item .change { font-size: 11px; font-weight: 600; margin-top: 2px; }
-.change-up { color: var(--success); }
-.change-down { color: var(--danger); }
-
-/* ============================================================
-   TIMELINE / FOOTER
-   ============================================================ */
-.result-footer {
-  text-align: center; font-size: 11px; color: var(--text-muted);
-  margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap;
-}
-.result-footer .badge {
-  padding: 3px 10px; border-radius: 12px; background: var(--bg-card);
-  border: 1px solid var(--border); font-size: 10px; font-weight: 600;
-}
-
-/* ============================================================
+/* ============================================
    RESPONSIVE
-   ============================================================ */
+   ============================================ */
 @media (max-width: 1024px) {
-  .main-layout { flex-direction: column; height: auto; }
-  .results-panel { width: 100%; max-width: none; min-width: auto; height: 50vh; border-left: none; border-bottom: 1px solid var(--border); }
-  .chart-panel { height: 50vh; }
-  .controls-bar { flex-direction: column; align-items: stretch; }
-  .agent-cards { flex-wrap: wrap; }
+  .stages-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 768px) {
+  .header { padding: 0 16px; height: 60px; }
+  .logo-text h1 { font-size: 18px; }
+  .logo-icon { width: 38px; height: 38px; font-size: 16px; }
+  .header-badge { display: none; }
+  .nav-link { display: none; }
+
+  .hero { padding: 50px 20px 40px; }
+  .hero-stats { gap: 24px; }
+  .hero-stat .num { font-size: 22px; }
+
+  .stages-section { padding: 0 16px 40px; }
+  .stages-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  .stage-card { padding: 16px 12px; }
+  .stage-icon { font-size: 22px; }
+  .stage-title { font-size: 11px; }
+
+  .analysis-section { padding: 0 16px 40px; }
+  .analysis-card { padding: 20px; }
+  .form-grid { grid-template-columns: 1fr; gap: 14px; }
+
+  .results-section { padding: 0 16px 60px; }
+  .zones-grid { grid-template-columns: 1fr; gap: 10px; }
+  .decision-action { letter-spacing: 3px; }
+  .decision-emoji { font-size: 48px; }
+  .decision-banner { padding: 28px 20px; }
+
+  .stage-pills { gap: 6px; }
+  .stage-pill { font-size: 10px; padding: 5px 10px; }
+  .progress-timer { font-size: 36px; }
 }
 
-@media (max-width: 640px) {
-  .header { padding: 0 12px; height: 56px; }
-  .logo h1 { font-size: 16px; }
-  .controls-bar { padding: 12px; gap: 10px; }
-  .select-styled, .search-pairs { min-width: auto; width: 100%; }
-  .btn-analyze { width: 100%; justify-content: center; }
-  .results-panel { height: 60vh; }
-  .chart-panel { height: 40vh; }
+@media (max-width: 480px) {
+  .stages-grid { grid-template-columns: 1fr 1fr; }
+  .stage-card:nth-child(5) { grid-column: 1 / -1; }
+  .hero-title { font-size: 28px; }
+  .hero-desc { font-size: 14px; }
+  .analysis-card-title { font-size: 17px; }
 }
-
-/* ============================================================
-   TOOLTIP / UTILS
-   ============================================================ */
-.tooltip { position: relative; }
-.tooltip::after {
-  content: attr(data-tooltip); position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%);
-  background: var(--bg-card); color: var(--text-primary); padding: 6px 10px; border-radius: 6px;
-  font-size: 11px; white-space: nowrap; border: 1px solid var(--border);
-  box-shadow: var(--shadow-md); opacity: 0; pointer-events: none; transition: var(--transition);
-  margin-bottom: 6px; z-index: 1000;
-}
-.tooltip:hover::after { opacity: 1; }
-
-.glass {
-  background: rgba(19, 27, 43, 0.8);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255,255,255,0.05);
-}
-
-/* Collapse button for panel */
-.panel-collapse-btn {
-  position: absolute; left: 0; top: 50%; transform: translateY(-50%);
-  width: 20px; height: 60px; background: var(--bg-card);
-  border: 1px solid var(--border); border-left: none;
-  border-radius: 0 8px 8px 0; cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 10px; color: var(--text-muted); z-index: 50;
-  transition: var(--transition);
-}
-.panel-collapse-btn:hover { background: var(--bg-card-hover); color: var(--text-primary); }
 </style>
 </head>
 <body>
 
-<svg width="0" height="0" style="position:absolute">
-  <defs>
-    <linearGradient id="progGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#00d4aa"/>
-      <stop offset="100%" stop-color="#06b6d4"/>
-    </linearGradient>
-  </defs>
-</svg>
+<div class="bg-grid"></div>
 
-<!-- ============================================================ HEADER -->
-<header class="header">
-  <div class="logo" onclick="window.location.reload()">
+<svg width="0" height="0"><defs>
+  <linearGradient id="progGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+    <stop offset="0%" stop-color="#00d4aa"/>
+    <stop offset="100%" stop-color="#6366f1"/>
+  </linearGradient>
+</defs></svg>
+
+<!-- ===== HEADER ===== -->
+<header class="header" id="header">
+  <div class="logo" onclick="location.reload()">
     <div class="logo-icon">TA</div>
-    <div>
+    <div class="logo-text">
       <h1>Trading<span>Agents</span></h1>
-      <div class="logo-tagline">منصة التحليل الذكي بالذكاء الاصطناعي</div>
+      <div class="tagline">منصة التحليل الذكي</div>
     </div>
   </div>
-  <div class="header-right">
-    <div class="market-status">السوق مفتوح</div>
-    <div class="header-badge">AI Multi-Agent</div>
+  <div class="header-actions">
+    <a class="nav-link active" onclick="scrollToSection('analysisSection')">التحليل</a>
+    <a class="nav-link" onclick="scrollToSection('stagesSection')">كيف يعمل</a>
+    <div class="header-badge">
+      <span class="dot"></span>
+      ذكاء اصطناعي متعدد الوكلاء
+    </div>
   </div>
 </header>
 
-<!-- ============================================================ NEWS TICKER -->
-<div class="news-ticker">
-  <div class="ticker-label">📡 الأسواق</div>
-  <div class="ticker-wrap">
-    <div class="ticker-content" id="tickerContent">
-      <span class="ticker-item"><span class="symbol">EUR/USD</span> <span class="change-up">▲ 0.15%</span></span>
-      <span class="ticker-item"><span class="symbol">GBP/USD</span> <span class="change-up">▲ 0.08%</span></span>
-      <span class="ticker-item"><span class="symbol">USD/JPY</span> <span class="change-down">▼ 0.22%</span></span>
-      <span class="ticker-item"><span class="symbol">XAU/USD</span> <span class="change-up">▲ 0.45%</span></span>
-      <span class="ticker-item"><span class="symbol">BTC/USD</span> <span class="change-up">▲ 1.20%</span></span>
-      <span class="ticker-item"><span class="symbol">ETH/USD</span> <span class="change-down">▼ 0.60%</span></span>
-      <span class="ticker-item"><span class="symbol">S&P 500</span> <span class="change-up">▲ 0.30%</span></span>
-      <span class="ticker-item"><span class="symbol">NASDAQ</span> <span class="change-up">▲ 0.55%</span></span>
-      <span class="ticker-item"><span class="symbol">Oil</span> <span class="change-down">▼ 0.12%</span></span>
-      <span class="ticker-item"><span class="symbol">AAPL</span> <span class="change-up">▲ 0.80%</span></span>
-      <span class="ticker-item"><span class="symbol">TSLA</span> <span class="change-down">▼ 1.10%</span></span>
-      <span class="ticker-item"><span class="symbol">NVDA</span> <span class="change-up">▲ 2.30%</span></span>
-      <!-- Duplicate for seamless loop -->
-      <span class="ticker-item"><span class="symbol">EUR/USD</span> <span class="change-up">▲ 0.15%</span></span>
-      <span class="ticker-item"><span class="symbol">GBP/USD</span> <span class="change-up">▲ 0.08%</span></span>
-      <span class="ticker-item"><span class="symbol">USD/JPY</span> <span class="change-down">▼ 0.22%</span></span>
-      <span class="ticker-item"><span class="symbol">XAU/USD</span> <span class="change-up">▲ 0.45%</span></span>
-      <span class="ticker-item"><span class="symbol">BTC/USD</span> <span class="change-up">▲ 1.20%</span></span>
-      <span class="ticker-item"><span class="symbol">ETH/USD</span> <span class="change-down">▼ 0.60%</span></span>
-      <span class="ticker-item"><span class="symbol">S&P 500</span> <span class="change-up">▲ 0.30%</span></span>
-      <span class="ticker-item"><span class="symbol">NASDAQ</span> <span class="change-up">▲ 0.55%</span></span>
-      <span class="ticker-item"><span class="symbol">Oil</span> <span class="change-down">▼ 0.12%</span></span>
-      <span class="ticker-item"><span class="symbol">AAPL</span> <span class="change-up">▲ 0.80%</span></span>
-      <span class="ticker-item"><span class="symbol">TSLA</span> <span class="change-down">▼ 1.10%</span></span>
-      <span class="ticker-item"><span class="symbol">NVDA</span> <span class="change-up">▲ 2.30%</span></span>
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div class="hero-glow g1"></div>
+  <div class="hero-glow g2"></div>
+  <div class="hero-particles">
+    <div class="hero-particle"></div>
+    <div class="hero-particle"></div>
+    <div class="hero-particle"></div>
+    <div class="hero-particle"></div>
+    <div class="hero-particle"></div>
+    <div class="hero-particle"></div>
+  </div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">
+      ✨ مدعوم بالذكاء الاصطناعي المتقدم
+    </div>
+    <h1 class="hero-title">
+      حلّل الأسواق بذكاء<br>
+      <span class="gradient-text">اصطناعي متعدد الوكلاء</span>
+    </h1>
+    <p class="hero-desc">
+      فريق من وكلاء الذكاء الاصطناعي يعملون معاً لتحليل الأسواق المالية — تحليل فني، أساسي، أخبار، معنويات السوق، وتقييم المخاطر — في تقرير واحد شامل.
+    </p>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="num">5+</div>
+        <div class="stat-label">وكلاء ذكاء اصطناعي</div>
+      </div>
+      <div class="hero-stat">
+        <div class="num">27+</div>
+        <div class="stat-label">أداة مالية</div>
+      </div>
+      <div class="hero-stat">
+        <div class="num">360°</div>
+        <div class="stat-label">تحليل شامل</div>
+      </div>
     </div>
   </div>
-</div>
+</section>
 
-<!-- ============================================================ CONTROLS -->
-<div class="controls-bar">
-  <div class="control-group">
-    <label>🔍 البحث عن زوج</label>
-    <input type="text" class="search-pairs" id="pairSearch" placeholder="ابحث باسم الزوج أو الرمز..." autocomplete="off">
+<!-- ===== STAGES ===== -->
+<section class="stages-section" id="stagesSection">
+  <div class="section-header">
+    <h2>⚙️ كيف يعمل التحليل؟</h2>
+    <p>خمس مراحل متتابعة لتحليل شامل ودقيق</p>
   </div>
-  <div class="control-group">
-    <label>📊 اختيار الزوج</label>
-    <select class="select-styled" id="tickerSelect"></select>
+  <div class="stages-grid">
+    <div class="stage-card">
+      <div class="stage-num">01</div>
+      <div class="stage-icon">📊</div>
+      <div class="stage-title">جمع البيانات<br>وتحليل السوق</div>
+    </div>
+    <div class="stage-card">
+      <div class="stage-num">02</div>
+      <div class="stage-icon">📰</div>
+      <div class="stage-title">تحليل الأخبار<br>والمؤشرات</div>
+    </div>
+    <div class="stage-card">
+      <div class="stage-num">03</div>
+      <div class="stage-icon">⚔️</div>
+      <div class="stage-title">مناقشة فريق<br>المحللين</div>
+    </div>
+    <div class="stage-card">
+      <div class="stage-num">04</div>
+      <div class="stage-icon">🛡️</div>
+      <div class="stage-title">تقييم<br>المخاطر</div>
+    </div>
+    <div class="stage-card">
+      <div class="stage-num">05</div>
+      <div class="stage-icon">🎯</div>
+      <div class="stage-title">اتخاذ القرار<br>النهائي</div>
+    </div>
   </div>
-  <div class="control-group">
-    <label>🤖 المزود الذكي</label>
-    <select class="select-styled" id="providerSelect">
-      <option value="deepseek">DeepSeek (عميق)</option>
-      <option value="groq">Groq (سريع)</option>
-      <option value="google">Google Gemini</option>
-      <option value="openai">OpenAI GPT</option>
-      <option value="ollama">Ollama محلي</option>
-    </select>
-  </div>
-  <button class="btn-analyze" id="analyzeBtn">
-    <span class="spinner"></span>
-    <span class="btn-text">🔍 تحليل شام</span>
-  </button>
-  <span id="statusBadge" class="status-badge">جاهز</span>
-</div>
+</section>
 
-<!-- ============================================================ AGENT SELECTOR -->
-<div class="agent-selector">
-  <div class="agent-selector-title">اختر الوكلاء الذكيين للتحليل</div>
-  <div class="agent-cards" id="agentCards">
-    <div class="agent-card-select active" data-agent="all">
-      <div class="agent-icon" style="background:linear-gradient(135deg,rgba(0,212,170,0.2),rgba(6,182,212,0.1));color:#00d4aa">🤖</div>
-      <div class="agent-info">
-        <div class="agent-name">فريق كامل</div>
-        <div class="agent-desc">جميع المحللين</div>
-      </div>
-      <div class="agent-check">✓</div>
+<!-- ===== ANALYSIS FORM ===== -->
+<section class="analysis-section" id="analysisSection">
+  <div class="analysis-card">
+    <div class="analysis-card-title">
+      🚀 ابدأ التحليل الذكي
     </div>
-    <div class="agent-card-select" data-agent="technical">
-      <div class="agent-icon" style="background:linear-gradient(135deg,rgba(59,130,246,0.2),rgba(139,92,246,0.1));color:#3b82f6">📊</div>
-      <div class="agent-info">
-        <div class="agent-name">المحلل الفني</div>
-        <div class="agent-desc">التحليل الفني والمؤشرات</div>
-      </div>
-      <div class="agent-check">✓</div>
-    </div>
-    <div class="agent-card-select" data-agent="sentiment">
-      <div class="agent-icon" style="background:linear-gradient(135deg,rgba(139,92,246,0.2),rgba(168,85,247,0.1));color:#8b5cf6">💬</div>
-      <div class="agent-info">
-        <div class="agent-name">محلل المعنويات</div>
-        <div class="agent-desc">تحليل المشاعر والاتجاهات</div>
-      </div>
-      <div class="agent-check">✓</div>
-    </div>
-    <div class="agent-card-select" data-agent="news">
-      <div class="agent-icon" style="background:linear-gradient(135deg,rgba(6,182,212,0.2),rgba(59,130,246,0.1));color:#06b6d4">📰</div>
-      <div class="agent-info">
-        <div class="agent-name">محلل الأخبار</div>
-        <div class="agent-desc">الأخبار الاقتصادية والأحداث</div>
-      </div>
-      <div class="agent-check">✓</div>
-    </div>
-    <div class="agent-card-select" data-agent="fundamental">
-      <div class="agent-icon" style="background:linear-gradient(135deg,rgba(16,185,129,0.2),rgba(6,182,212,0.1));color:#10b981">📋</div>
-      <div class="agent-info">
-        <div class="agent-name">المحلل الأساسي</div>
-        <div class="agent-desc">التحليل الأساسي والبيانات</div>
-      </div>
-      <div class="agent-check">✓</div>
-    </div>
-    <div class="agent-card-select" data-agent="risk">
-      <div class="agent-icon" style="background:linear-gradient(135deg,rgba(245,158,11,0.2),rgba(239,68,68,0.1));color:#f59e0b">🛡️</div>
-      <div class="agent-info">
-        <div class="agent-name">محلل المخاطر</div>
-        <div class="agent-desc">تقييم المخاطر والإدارة</div>
-      </div>
-      <div class="agent-check">✓</div>
-    </div>
-    <div class="agent-card-select" data-agent="debate">
-      <div class="agent-icon" style="background:linear-gradient(135deg,rgba(239,68,68,0.2),rgba(16,185,129,0.1));color:#ef4444">⚔️</div>
-      <div class="agent-info">
-        <div class="agent-name">مناقشة Bull vs Bear</div>
-        <div class="agent-desc">مناظرة الاتجاهات</div>
-      </div>
-      <div class="agent-check">✓</div>
-    </div>
-  </div>
-</div>
+    <div class="analysis-card-desc">اختر الزوج أو السهم والمزود وابدأ التحليل الشامل</div>
 
-<!-- ============================================================ MAIN LAYOUT -->
-<div class="main-layout">
-  <div class="results-panel" id="resultsPanel">
-    <div class="panel-header">
-      <div class="panel-title"><span class="icon">📊</span> تقرير التحليل الشامل</div>
-      <div class="panel-actions">
-        <button class="panel-btn tooltip" data-tooltip="تصغير" onclick="togglePanel()">⏷</button>
-        <button class="panel-btn tooltip" data-tooltip="تحديث" onclick="location.reload()">↻</button>
+    <div class="form-grid">
+      <div class="form-group">
+        <label class="form-label">
+          <span class="icon">🔍</span> بحث سريع
+        </label>
+        <div class="search-wrapper">
+          <span class="search-icon">🔎</span>
+          <input class="form-input" type="text" id="pairSearch" placeholder="ابحث عن زوج أو سهم..." autocomplete="off">
+        </div>
       </div>
-    </div>
-    <div class="panel-body" id="resultsContent">
-      <div class="placeholder-view">
-        <div class="placeholder-icon">📈</div>
-        <div class="placeholder-title">ابدأ التحليل الذكي</div>
-        <div class="placeholder-desc">اختر زوجاً أو سهماً من القائمة، ثم اختر الوكلاء الذكيين للتحليل، واضغط <strong style="color:var(--accent-primary)">تحليل شامل</strong></div>
-      </div>
-    </div>
-  </div>
-  <div class="chart-panel">
-    <div class="chart-loading" id="chartLoading">
-      <div class="spinner-large"></div>
-      <div>جاري تحميل الرسم البياني...</div>
-    </div>
-    <div id="tvchart"></div>
-  </div>
-</div>
 
-<!-- ============================================================ SCRIPTS -->
-<script src="https://s3.tradingview.com/tv.js"></script>
+      <div class="form-group">
+        <label class="form-label">
+          <span class="icon">📋</span> الزوج أو السهم
+        </label>
+        <select class="form-select" id="tickerSelect"></select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">
+          <span class="icon">🤖</span> مزود الذكاء الاصطناعي
+        </label>
+        <select class="form-select" id="providerSelect">
+          <option value="deepseek">🧠 DeepSeek V4</option>
+          <option value="groq">⚡ Groq (سريع)</option>
+          <option value="google">🔵 Google Gemini</option>
+          <option value="openai">🟢 OpenAI GPT</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">
+          <span class="icon">📅</span> تاريخ التحليل
+        </label>
+        <input class="form-input" type="date" id="tradeDateInput">
+      </div>
+    </div>
+
+    <button class="btn-analyze" id="analyzeBtn">
+      <span class="spinner"></span>
+      <span class="btn-text">🚀 بدء التحليل الشامل</span>
+    </button>
+
+    <div class="status-bar">
+      <div class="status-indicator">
+        <div class="status-dot" id="statusDot"></div>
+        <span class="status-text" id="statusText">جاهز للتحليل</span>
+      </div>
+      <div class="shortcut-hint">
+        <span class="kbd">Ctrl</span>+<span class="kbd">Enter</span> للتحليل السريع
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== RESULTS ===== -->
+<section class="results-section" id="resultsSection" style="display:none">
+  <div id="resultsArea"></div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="app-footer">
+  <span>TradingAgents</span> — منصة التحليل الذكي بالذكاء الاصطناعي المتقدم © 2025
+</footer>
+
 <script>
-// ============================================================
+// ============================================
 // DATA
-// ============================================================
-const STAGES = [
-  "جمع البيانات وتحليل السوق",
-  "تحليل الأخبار والمؤشرات",
-  "مناقشة فريق المحللين",
-  "تقييم المخاطر",
-  "اتخاذ القرار النهائي"
+// ============================================
+const PAIRS = [
+  { label: "EUR/USD — يورو/دولار", flag: "🇪🇺", yahoo: "EURUSD=X", cat: "عملات" },
+  { label: "GBP/USD — جنيه/دولار", flag: "🇬🇧", yahoo: "GBPUSD=X", cat: "عملات" },
+  { label: "USD/JPY — دولار/ين", flag: "🇯🇵", yahoo: "USDJPY=X", cat: "عملات" },
+  { label: "USD/CHF — دولار/فرنك", flag: "🇨🇭", yahoo: "USDCHF=X", cat: "عملات" },
+  { label: "AUD/USD — أسترالي/دولار", flag: "🇦🇺", yahoo: "AUDUSD=X", cat: "عملات" },
+  { label: "USD/CAD — دولار/كندي", flag: "🇨🇦", yahoo: "USDCAD=X", cat: "عملات" },
+  { label: "NZD/USD — نيوزيلندي/دولار", flag: "🇳🇿", yahoo: "NZDUSD=X", cat: "عملات" },
+  { label: "GBP/JPY — جنيه/ين", flag: "🇬🇧", yahoo: "GBPJPY=X", cat: "عملات" },
+  { label: "EUR/JPY — يورو/ين", flag: "🇪🇺", yahoo: "EURJPY=X", cat: "عملات" },
+  { label: "EUR/GBP — يورو/جنيه", flag: "🇪🇺", yahoo: "EURGBP=X", cat: "عملات" },
+  { label: "Apple — أبل (AAPL)", flag: "🍎", yahoo: "AAPL", cat: "أسهم" },
+  { label: "Tesla — تسلا (TSLA)", flag: "🚗", yahoo: "TSLA", cat: "أسهم" },
+  { label: "NVIDIA — إنفيديا (NVDA)", flag: "🟢", yahoo: "NVDA", cat: "أسهم" },
+  { label: "Microsoft — مايكروسوفت (MSFT)", flag: "🪟", yahoo: "MSFT", cat: "أسهم" },
+  { label: "Amazon — أمازون (AMZN)", flag: "📦", yahoo: "AMZN", cat: "أسهم" },
+  { label: "Google — جوجل (GOOGL)", flag: "🔵", yahoo: "GOOGL", cat: "أسهم" },
+  { label: "Meta — ميتا (META)", flag: "👤", yahoo: "META", cat: "أسهم" },
+  { label: "S&P 500 — ستاندرد آند بورز", flag: "📈", yahoo: "^GSPC", cat: "مؤشرات" },
+  { label: "NASDAQ — ناسداك", flag: "📊", yahoo: "^IXIC", cat: "مؤشرات" },
+  { label: "Dow Jones — داو جونز", flag: "🏭", yahoo: "^DJI", cat: "مؤشرات" },
+  { label: "DAX 40 — داكس الألماني", flag: "🇩🇪", yahoo: "^GDAXI", cat: "مؤشرات" },
+  { label: "Gold — الذهب (XAU/USD)", flag: "🥇", yahoo: "GC=F", cat: "سلع" },
+  { label: "Crude Oil — النفط (WTI)", flag: "🛢️", yahoo: "CL=F", cat: "سلع" },
+  { label: "Silver — الفضة (XAG/USD)", flag: "🥈", yahoo: "SI=F", cat: "سلع" },
+  { label: "Bitcoin — بيتكوين (BTC)", flag: "₿", yahoo: "BTC-USD", cat: "عملات رقمية" },
+  { label: "Ethereum — إيثيريوم (ETH)", flag: "♦", yahoo: "ETH-USD", cat: "عملات رقمية" },
+  { label: "Solana — سولانا (SOL)", flag: "◎", yahoo: "SOL-USD", cat: "عملات رقمية" },
+  { label: "XRP — ريبل (XRP)", flag: "✦", yahoo: "XRP-USD", cat: "عملات رقمية" },
 ];
 
-const AGENTS = {
-  all: { name: "فريق كامل", icon: "🤖", color: "#00d4aa" },
-  technical: { name: "المحلل الفني", icon: "📊", color: "#3b82f6" },
-  sentiment: { name: "محلل المعنويات", icon: "💬", color: "#8b5cf6" },
-  news: { name: "محلل الأخبار", icon: "📰", color: "#06b6d4" },
-  fundamental: { name: "المحلل الأساسي", icon: "📋", color: "#10b981" },
-  risk: { name: "محلل المخاطر", icon: "🛡️", color: "#f59e0b" },
-  debate: { name: "مناقشة Bull vs Bear", icon: "⚔️", color: "#ef4444" }
+const STAGES = [
+  "جمع البيانات",
+  "التحليل الفني",
+  "الأخبار والمعنويات",
+  "مناقشة المحللين",
+  "تقييم المخاطر",
+  "القرار النهائي"
+];
+
+const CAT_ORDER = ["عملات", "أسهم", "مؤشرات", "سلع", "عملات رقمية"];
+
+const CAT_ICONS = {
+  "عملات": "💱",
+  "أسهم": "📈",
+  "مؤشرات": "📊",
+  "سلع": "🏆",
+  "عملات رقمية": "₿"
 };
 
-const PAIRS = [
-  // === FOREX MAJORS ===
-  { label: "EUR/USD", flag: "🇪🇺", tv: "FX:EURUSD", yahoo: "EURUSD=X", category: "forex" },
-  { label: "GBP/USD", flag: "🇬🇧", tv: "FX:GBPUSD", yahoo: "GBPUSD=X", category: "forex" },
-  { label: "USD/JPY", flag: "🇯🇵", tv: "FX:USDJPY", yahoo: "USDJPY=X", category: "forex" },
-  { label: "USD/CHF", flag: "🇨🇭", tv: "FX:USDCHF", yahoo: "USDCHF=X", category: "forex" },
-  { label: "AUD/USD", flag: "🇦🇺", tv: "FX:AUDUSD", yahoo: "AUDUSD=X", category: "forex" },
-  { label: "USD/CAD", flag: "🇨🇦", tv: "FX:USDCAD", yahoo: "USDCAD=X", category: "forex" },
-  { label: "NZD/USD", flag: "🇳🇿", tv: "FX:NZDUSD", yahoo: "NZDUSD=X", category: "forex" },
-  // === FOREX CROSSES ===
-  { label: "GBP/JPY", flag: "🇬🇧", tv: "FX:GBPJPY", yahoo: "GBPJPY=X", category: "forex" },
-  { label: "EUR/JPY", flag: "🇪🇺", tv: "FX:EURJPY", yahoo: "EURJPY=X", category: "forex" },
-  { label: "EUR/GBP", flag: "🇪🇺", tv: "FX:EURGBP", yahoo: "EURGBP=X", category: "forex" },
-  { label: "AUD/JPY", flag: "🇦🇺", tv: "FX:AUDJPY", yahoo: "AUDJPY=X", category: "forex" },
-  { label: "CHF/JPY", flag: "🇨🇭", tv: "FX:CHFJPY", yahoo: "CHFJPY=X", category: "forex" },
-  // === STOCKS ===
-  { label: "Apple (AAPL)", flag: "🍎", tv: "NASDAQ:AAPL", yahoo: "AAPL", category: "stock" },
-  { label: "Tesla (TSLA)", flag: "🚗", tv: "NASDAQ:TSLA", yahoo: "TSLA", category: "stock" },
-  { label: "NVIDIA (NVDA)", flag: "🟢", tv: "NASDAQ:NVDA", yahoo: "NVDA", category: "stock" },
-  { label: "Microsoft (MSFT)", flag: "🪟", tv: "NASDAQ:MSFT", yahoo: "MSFT", category: "stock" },
-  { label: "Amazon (AMZN)", flag: "📦", tv: "NASDAQ:AMZN", yahoo: "AMZN", category: "stock" },
-  { label: "Google (GOOGL)", flag: "🔵", tv: "NASDAQ:GOOGL", yahoo: "GOOGL", category: "stock" },
-  { label: "Meta (META)", flag: "👤", tv: "NASDAQ:META", yahoo: "META", category: "stock" },
-  { label: "Berkshire (BRK.B)", flag: "🏦", tv: "NYSE:BRK.B", yahoo: "BRK-B", category: "stock" },
-  { label: "JPMorgan (JPM)", flag: "💰", tv: "NYSE:JPM", yahoo: "JPM", category: "stock" },
-  // === INDICES ===
-  { label: "S&P 500", flag: "📈", tv: "FOREXCOM:SPX500", yahoo: "^GSPC", category: "index" },
-  { label: "NASDAQ 100", flag: "📊", tv: "NASDAQ:NDX", yahoo: "^IXIC", category: "index" },
-  { label: "Dow Jones", flag: "🏭", tv: "FOREXCOM:DJI", yahoo: "^DJI", category: "index" },
-  { label: "DAX 40", flag: "🇩🇪", tv: "XETR:DAX", yahoo: "^GDAXI", category: "index" },
-  { label: "FTSE 100", flag: "🇬🇧", tv: "FOREXCOM:UKX", yahoo: "^FTSE", category: "index" },
-  { label: "Nikkei 225", flag: "🇯🇵", tv: "TVC:NI225", yahoo: "^N225", category: "index" },
-  // === COMMODITIES ===
-  { label: "Gold (XAU/USD)", flag: "🥇", tv: "FOREXCOM:XAUUSD", yahoo: "GC=F", category: "commodity" },
-  { label: "Silver (XAG/USD)", flag: "🥈", tv: "FOREXCOM:XAGUSD", yahoo: "SI=F", category: "commodity" },
-  { label: "Crude Oil (WTI)", flag: "🛢️", tv: "FOREXCOM:USOIL", yahoo: "CL=F", category: "commodity" },
-  { label: "Brent Oil", flag: "⛽", tv: "FOREXCOM:UKOIL", yahoo: "BZ=F", category: "commodity" },
-  { label: "Natural Gas", flag: "🔥", tv: "FOREXCOM:NGAS", yahoo: "NG=F", category: "commodity" },
-  // === CRYPTO ===
-  { label: "Bitcoin (BTC/USD)", flag: "₿", tv: "COINBASE:BTCUSD", yahoo: "BTC-USD", category: "crypto" },
-  { label: "Ethereum (ETH/USD)", flag: "♦", tv: "COINBASE:ETHUSD", yahoo: "ETH-USD", category: "crypto" },
-  { label: "Solana (SOL/USD)", flag: "◎", tv: "COINBASE:SOLUSD", yahoo: "SOL-USD", category: "crypto" },
-  { label: "XRP (XRP/USD)", flag: "✦", tv: "COINBASE:XRPUSD", yahoo: "XRP-USD", category: "crypto" },
-  { label: "Dogecoin (DOGE/USD)", flag: "Ð", tv: "COINBASE:DOGEUSD", yahoo: "DOGE-USD", category: "crypto" },
-  { label: "Cardano (ADA/USD)", flag: "❖", tv: "COINBASE:ADAUSD", yahoo: "ADA-USD", category: "crypto" },
-  { label: "Polkadot (DOT/USD)", flag: "●", tv: "COINBASE:DOTUSD", yahoo: "DOT-USD", category: "crypto" },
-];
+// ============================================
+// DOM
+// ============================================
+const $ = id => document.getElementById(id);
+const tickerSelect = $("tickerSelect");
+const pairSearch = $("pairSearch");
+const analyzeBtn = $("analyzeBtn");
+const statusDot = $("statusDot");
+const statusText = $("statusText");
+const resultsSection = $("resultsSection");
+const resultsArea = $("resultsArea");
 
-// ============================================================
-// DOM ELEMENTS
-// ============================================================
-const tickerSelect = document.getElementById("tickerSelect");
-const pairSearch = document.getElementById("pairSearch");
-const analyzeBtn = document.getElementById("analyzeBtn");
-const statusBadge = document.getElementById("statusBadge");
-const resultsContent = document.getElementById("resultsContent");
-const resultsPanel = document.getElementById("resultsPanel");
-const chartLoading = document.getElementById("chartLoading");
+// Set default date
+$("tradeDateInput").value = new Date().toISOString().split("T")[0];
 
-// ============================================================
-// POPULATE PAIRS DROPDOWN
-// ============================================================
-function populatePairs(filter = "") {
+// ============================================
+// HEADER SCROLL
+// ============================================
+let lastScroll = 0;
+window.addEventListener("scroll", () => {
+  const header = $("header");
+  if (window.scrollY > 50) header.classList.add("scrolled");
+  else header.classList.remove("scrolled");
+  lastScroll = window.scrollY;
+});
+
+function scrollToSection(id) {
+  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ============================================
+// POPULATE PAIRS
+// ============================================
+function populatePairs(filter) {
   const currentVal = tickerSelect.value;
   tickerSelect.innerHTML = "";
-  
-  const categories = {
-    forex: "🌐 العملات (Forex)",
-    stock: "🏢 الأسهم",
-    index: "📊 المؤشرات",
-    commodity: "🛢️ السلع",
-    crypto: "₿ العملات الرقمية"
-  };
-  
-  const filtered = PAIRS.filter(p => 
-    p.label.toLowerCase().includes(filter.toLowerCase()) ||
-    p.yahoo.toLowerCase().includes(filter.toLowerCase()) ||
-    p.tv.toLowerCase().includes(filter.toLowerCase())
+  const f = (filter || "").toLowerCase();
+  const filtered = PAIRS.filter(p =>
+    p.label.toLowerCase().includes(f) ||
+    p.yahoo.toLowerCase().includes(f) ||
+    p.cat.includes(f)
   );
-  
   const grouped = {};
   filtered.forEach(p => {
-    if (!grouped[p.category]) grouped[p.category] = [];
-    grouped[p.category].push(p);
+    if (!grouped[p.cat]) grouped[p.cat] = [];
+    grouped[p.cat].push(p);
   });
-  
-  Object.entries(grouped).forEach(([cat, items]) => {
-    const optGroup = document.createElement("optgroup");
-    optGroup.label = categories[cat] || cat;
-    optGroup.style.color = "var(--text-muted)";
-    optGroup.style.fontSize = "11px";
-    optGroup.style.fontWeight = "700";
-    
-    items.forEach(p => {
+  CAT_ORDER.forEach(cat => {
+    if (!grouped[cat]) return;
+    const optgroup = document.createElement("optgroup");
+    optgroup.label = `${CAT_ICONS[cat] || ""} ${cat}`;
+    grouped[cat].forEach(p => {
       const opt = document.createElement("option");
       opt.value = p.yahoo;
       opt.textContent = `${p.flag} ${p.label}`;
-      opt.dataset.tv = p.tv;
-      opt.dataset.category = p.category;
-      optGroup.appendChild(opt);
+      optgroup.appendChild(opt);
     });
-    
-    tickerSelect.appendChild(optGroup);
+    tickerSelect.appendChild(optgroup);
   });
-  
   if (currentVal && Array.from(tickerSelect.options).some(o => o.value === currentVal)) {
     tickerSelect.value = currentVal;
   } else {
     tickerSelect.value = "EURUSD=X";
   }
 }
-
 populatePairs();
+pairSearch.addEventListener("input", e => populatePairs(e.target.value));
 
-// ============================================================
-// SEARCH PAIRS
-// ============================================================
-pairSearch.addEventListener("input", (e) => {
-  populatePairs(e.target.value);
-});
-
-// ============================================================
-// TRADINGVIEW CHART
-// ============================================================
-let tvWidget = null;
-const container = document.getElementById("tvchart");
-
-function initTradingView(sym) {
-  if (tvWidget) { tvWidget.remove(); tvWidget = null; }
-  chartLoading.style.display = "flex";
-  
-  if (!window.TradingView) {
-    chartLoading.innerHTML = `<div style="text-align:center;color:var(--text-muted)"><div style="font-size:32px;margin-bottom:12px">📉</div><div>TradingView غير متاح في منطقتك</div><div style="font-size:12px;margin-top:8px">حاول استخدام VPN</div></div>`;
-    return;
-  }
-  
-  setTimeout(() => {
-    chartLoading.style.display = "none";
-    try {
-      tvWidget = new TradingView.widget({
-        container_id: "tvchart",
-        symbol: sym,
-        interval: "D",
-        timezone: "Etc/UTC",
-        theme: "dark",
-        style: "1",
-        locale: "ar",
-        toolbar_bg: "#0a0f1a",
-        enable_publishing: false,
-        allow_symbol_change: true,
-        hide_side_toolbar: false,
-        width: "100%",
-        height: "100%",
-        studies: ["RSI@tv-basicstudies", "MASimple@tv-basicstudies"],
-        loading_screen: { backgroundColor: "#0a0f1a" },
-      });
-    } catch(e) {
-      container.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--danger);font-size:14px">❌ خطأ في تحميل الرسم البياني</div>`;
-    }
-  }, 300);
+// ============================================
+// UTILITIES
+// ============================================
+function esc(t) {
+  if (!t) return "";
+  return String(t).replace(/[&<>"']/g, m => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'
+  })[m]);
 }
 
-tickerSelect.addEventListener("change", () => {
-  const o = tickerSelect.options[tickerSelect.selectedIndex];
-  if (o?.dataset?.tv) initTradingView(o.dataset.tv);
-});
-
-setTimeout(() => initTradingView("FX:EURUSD"), 500);
-
-// ============================================================
-// AGENT SELECTOR
-// ============================================================
-let selectedAgents = ["all"];
-
-document.querySelectorAll(".agent-card-select").forEach(card => {
-  card.addEventListener("click", () => {
-    const agent = card.dataset.agent;
-    
-    if (agent === "all") {
-      selectedAgents = ["all"];
-      document.querySelectorAll(".agent-card-select").forEach(c => c.classList.remove("active"));
-      card.classList.add("active");
-    } else {
-      document.querySelector('[data-agent="all"]').classList.remove("active");
-      card.classList.toggle("active");
-      selectedAgents = Array.from(document.querySelectorAll(".agent-card-select.active"))
-        .map(c => c.dataset.agent);
-      if (selectedAgents.length === 0) {
-        selectedAgents = ["all"];
-        document.querySelector('[data-agent="all"]').classList.add("active");
-      }
-    }
+function formatReport(text) {
+  if (!text) return "";
+  let h = esc(text);
+  // Markdown headers
+  h = h.replace(/^###\s+(.+)$/gm, '<br><strong style="color:var(--accent);font-size:14px">$1</strong><br>');
+  h = h.replace(/^##\s+(.+)$/gm, '<br><strong style="color:var(--text-primary);font-size:16px">$1</strong><br>');
+  h = h.replace(/^#\s+(.+)$/gm, '<br><strong style="color:var(--text-primary);font-size:18px;display:block;margin:8px 0">$1</strong>');
+  // Bold
+  h = h.replace(/\*\*(.+?)\*\*/g, '<strong style="color:var(--text-primary)">$1</strong>');
+  // Tables
+  h = h.replace(/^\|(.+)\|$/gm, (m) => {
+    const cells = m.split('|').filter(c => c.trim()).map(c => c.trim());
+    if (cells.every(c => /^[-:]+$/.test(c))) return '';
+    return '<div style="display:flex;gap:12px;padding:6px 0;border-bottom:1px solid var(--border)">' +
+      cells.map(c => `<span style="flex:1;font-size:13px">${c}</span>`).join('') + '</div>';
   });
-});
+  h = h.replace(/\n\n/g, '<br><br>');
+  h = h.replace(/\n/g, '<br>');
+  return h;
+}
 
-// ============================================================
+function findPrice(text, keywords) {
+  const lines = text.split("\n");
+  for (const line of lines) {
+    if (keywords.some(k => line.toLowerCase().includes(k))) {
+      const nums = line.match(/\d+\.?\d*/g);
+      if (nums) return nums[0];
+    }
+  }
+  return "—";
+}
+
+// ============================================
 // ANALYSIS
-// ============================================================
+// ============================================
 let currentTaskId = null, startTime = null, timerInterval = null;
 
 analyzeBtn.addEventListener("click", async () => {
   const ticker = tickerSelect.value;
-  const provider = document.getElementById("providerSelect").value;
   if (!ticker) return;
-  
+
   analyzeBtn.disabled = true;
   analyzeBtn.classList.add("loading");
-  statusBadge.textContent = "جاري التحليل...";
-  statusBadge.className = "status-badge running";
+  setStatus("running", "جاري التحليل...");
+  resultsSection.style.display = "block";
   showProgress(0, 0);
-  
+  resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
   try {
-    const agentsParam = selectedAgents.join(",");
-    const r = await fetch(`/analyze?ticker=${ticker}&llm_provider=${provider}&agents=${agentsParam}`, {method:"POST"});
+    const provider = $("providerSelect").value;
+    const tradeDate = $("tradeDateInput").value || "";
+    let url = `/analyze?ticker=${encodeURIComponent(ticker)}&llm_provider=${provider}`;
+    if (tradeDate) url += `&trade_date=${tradeDate}`;
+
+    const r = await fetch(url, { method: "POST" });
     const d = await r.json();
     currentTaskId = d.task_id;
     startTime = Date.now();
     pollResult(currentTaskId);
-  } catch {
-    statusBadge.textContent = "خطأ في الاتصال";
-    statusBadge.className = "status-badge error";
-    resultsContent.innerHTML = `<div class="placeholder-view"><div class="placeholder-icon" style="border-color:var(--danger);color:var(--danger)">⚠️</div><div class="placeholder-title" style="color:var(--danger)">فشل الاتصال بالخادم</div><div class="placeholder-desc">تأكد من تشغيل الخادم وحاول مرة أخرى</div></div>`;
+  } catch (e) {
+    setStatus("error", "فشل الاتصال بالسيرفر");
+    resultsArea.innerHTML = `
+      <div class="placeholder">
+        <div class="placeholder-icon" style="border-color:var(--danger)">⚠️</div>
+        <div class="placeholder-title" style="color:var(--danger)">فشل الاتصال</div>
+        <div class="placeholder-desc">تعذر الاتصال بسيرفر التحليل. تأكد من أن السيرفر يعمل.</div>
+      </div>`;
     analyzeBtn.disabled = false;
     analyzeBtn.classList.remove("loading");
   }
 });
 
-function showProgress(pct, si) {
-  const r = 58, circ = 2 * Math.PI * r;
+function setStatus(state, text) {
+  statusDot.className = "status-dot " + state;
+  statusText.textContent = text;
+}
+
+function showProgress(pct, stageIdx) {
+  const r = 68, circ = 2 * Math.PI * r;
   const off = circ - (pct / 100) * circ;
-  const stage = STAGES[Math.min(si, STAGES.length - 1)];
-  
+  const stage = STAGES[Math.min(stageIdx, STAGES.length - 1)];
+
   let pills = "";
   STAGES.forEach((s, i) => {
     let cls = "stage-pill";
-    if (i < si) cls += " done";
-    else if (i === si) cls += " active";
+    if (i < stageIdx) cls += " done";
+    else if (i === stageIdx) cls += " active";
     pills += `<div class="${cls}">${s}</div>`;
   });
-  
-  const agentAvatars = [
-    { icon: "📊", color: "#3b82f6" }, { icon: "💬", color: "#8b5cf6" },
-    { icon: "📰", color: "#06b6d4" }, { icon: "📋", color: "#10b981" },
-    { icon: "⚔️", color: "#f59e0b" }, { icon: "🛡️", color: "#ef4444" }
-  ];
-  
-  let avatars = "";
-  agentAvatars.forEach((a, i) => {
-    let cls = "progress-agent-avatar";
-    if (i < si) cls += " done";
-    else if (i === si) cls += " active";
-    avatars += `<div class="${cls}" style="color:${a.color}">${a.icon}</div>`;
-  });
-  
-  resultsContent.innerHTML = `
+
+  resultsArea.innerHTML = `
     <div class="progress-view">
-      <div class="progress-ring-container">
-        <svg><circle class="bg" cx="70" cy="70" r="${r}"/><circle class="fill" cx="70" cy="70" r="${r}" stroke-dasharray="${circ}" stroke-dashoffset="${off}"/></svg>
-        <div class="pct">${pct}%</div>
-        <div class="pct-label">اكتمال</div>
+      <div class="progress-orb">
+        <svg viewBox="0 0 140 140">
+          <circle class="track" cx="70" cy="70" r="${r}"/>
+          <circle class="fill" cx="70" cy="70" r="${r}" stroke-dasharray="${circ}" stroke-dashoffset="${off}"/>
+        </svg>
+        <div class="pct-text">${pct}%</div>
       </div>
       <div class="progress-timer" id="progressTimer">00:00</div>
-      <div class="progress-stage">${stage}</div>
-      <div class="progress-sub">تحليل متعدد الوكلاء · ${selectedAgents.length} محللين نشطين</div>
-      <div class="progress-bar-outer"><div class="progress-bar-inner" style="width:${pct}%"></div></div>
-      <div class="stage-track">${pills}</div>
-      <div class="progress-agents">${avatars}</div>
-    </div>
-  `;
+      <div class="progress-stage-label">${stage}</div>
+      <div class="progress-track">
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" style="width:${pct}%"></div>
+        </div>
+      </div>
+      <div class="stage-pills">${pills}</div>
+    </div>`;
 }
 
 function pollResult(taskId) {
+  if (timerInterval) clearInterval(timerInterval);
   timerInterval = setInterval(() => {
     const el = document.getElementById("progressTimer");
     if (!el || !startTime) return;
     const sec = Math.floor((Date.now() - startTime) / 1000);
     el.textContent = `${String(Math.floor(sec / 60)).padStart(2, "0")}:${String(sec % 60).padStart(2, "0")}`;
   }, 200);
-  
+
   const poll = async () => {
     try {
-      const r = await fetch(`/result/${taskId}`), d = await r.json();
+      const r = await fetch(`/result/${taskId}`);
+      const d = await r.json();
       if (d.status === "running") {
         showProgress(d.progress || 0, d.stage || 0);
         setTimeout(poll, 2000);
@@ -1210,260 +1545,250 @@ function pollResult(taskId) {
       clearInterval(timerInterval);
       analyzeBtn.disabled = false;
       analyzeBtn.classList.remove("loading");
-      
+
       if (d.status === "error") {
-        statusBadge.textContent = "خطأ";
-        statusBadge.className = "status-badge error";
-        resultsContent.innerHTML = `<div class="placeholder-view"><div class="placeholder-icon" style="border-color:var(--danger);color:var(--danger)">⚠️</div><div class="placeholder-title" style="color:var(--danger)">حدث خطأ</div><div class="placeholder-desc">${escHtml(d.result)}</div></div>`;
+        setStatus("error", "حدث خطأ في التحليل");
+        resultsArea.innerHTML = `
+          <div class="placeholder">
+            <div class="placeholder-icon" style="border-color:var(--danger)">⚠️</div>
+            <div class="placeholder-title" style="color:var(--danger)">حدث خطأ</div>
+            <div class="placeholder-desc" style="direction:ltr;text-align:left;font-family:monospace;font-size:12px;max-width:600px;word-break:break-all">${esc(d.result)}</div>
+          </div>`;
         return;
       }
-      
-      statusBadge.textContent = "اكتمل التحليل";
-      statusBadge.className = "status-badge done";
+
+      setStatus("done", "اكتمل التحليل ✓");
       renderResults(d.result, d.elapsed_seconds);
     } catch {
-      setTimeout(poll, 2000);
+      setTimeout(poll, 3000);
     }
   };
   poll();
 }
 
-// ============================================================
+// ============================================
 // RENDER RESULTS
-// ============================================================
+// ============================================
 function renderResults(result, elapsed) {
   if (!result) {
-    resultsContent.innerHTML = `<div class="placeholder-view"><div class="placeholder-icon">📭</div><div class="placeholder-title">لا توجد نتائج</div></div>`;
+    resultsArea.innerHTML = `
+      <div class="placeholder">
+        <div class="placeholder-icon">📭</div>
+        <div class="placeholder-title">لا توجد نتائج</div>
+      </div>`;
     return;
   }
-  
+
   const action = (result.action || "hold").toLowerCase();
-  const actionClass = action === "buy" || action === "overweight" ? "buy" : action === "sell" || action === "underweight" ? "sell" : "hold";
-  const actionEmoji = actionClass === "buy" ? "🟢" : actionClass === "sell" ? "🔴" : "🟡";
+  const isBuy = action === "buy" || action === "overweight";
+  const isSell = action === "sell" || action === "underweight";
+  const actionClass = isBuy ? "buy" : isSell ? "sell" : "hold";
+  const actionEmoji = isBuy ? "🟢" : isSell ? "🔴" : "🟡";
+  const actionAr = isBuy ? "شراء" : isSell ? "بيع" : "انتظار";
   const fs = result.final_state;
   const ticker = result.ticker || "";
   const company = result.company || ticker;
   const date = result.trade_date || "";
-  
+  const price = fs?.current_price || "—";
+
+  // Extract entry/exit prices
+  let entryBuy = "—", entrySell = "—", stopLoss = "—", takeProfit = "—";
+  const planText = fs?.trader_investment_plan || fs?.investment_plan || fs?.final_trade_decision || "";
+  if (planText) {
+    const e = findPrice(planText, ["entry", "دخول", "شراء", "buy"]);
+    if (e !== "—") entryBuy = e;
+    const ex = findPrice(planText, ["exit", "خروج", "بيع", "sell", "target", "هدف"]);
+    if (ex !== "—") entrySell = ex;
+    const sl = findPrice(planText, ["stop", "وقف", "stop loss"]);
+    if (sl !== "—") stopLoss = sl;
+    const tp = findPrice(planText, ["target", "profit", "هدف", "ربح", "take profit"]);
+    if (tp !== "—") takeProfit = tp;
+  }
+
   let html = "";
-  
-  // === Market Summary ===
-  html += `<div class="market-summary">
-    <div class="market-summary-item"><div class="label">الزوج</div><div class="value" style="font-size:13px">${company}</div></div>
-    <div class="market-summary-item"><div class="label">التاريخ</div><div class="value" style="font-size:13px">${date}</div></div>
-    <div class="market-summary-item"><div class="label">السعر الحالي</div><div class="value" style="font-size:13px">${fs?.current_price || "—"}</div></div>
-  </div>`;
-  
-  // === Decision Card ===
-  html += `<div class="decision-card animate-fadeIn">
-    <div class="decision-emoji">${actionEmoji}</div>
-    <div class="decision-text ${actionClass}">${action.toUpperCase()}</div>
-    <div class="decision-sub">توصية فريق التحليل الذكي</div>
-    <div class="confidence-meter">
-      <div class="confidence-label">مستوى الثقة</div>
-      <div class="confidence-track"><div class="confidence-fill" style="width:75%"></div></div>
-      <div class="confidence-value">75%</div>
-    </div>
-  </div>`;
-  
-  // === Entry Points ===
-  let entryText = "";
-  if (fs?.trader_investment_plan) {
-    const lines = fs.trader_investment_plan.split("\n").filter(l =>
-      /entry|exit|price|target|stop|سعر|دخول|خروج|هدف|وقف|شراء|بيع|limit|order|point|مستوى/i.test(l)
-    );
-    if (lines.length > 0) entryText = lines.join("\n");
-  }
-  if (!entryText && fs?.investment_plan) {
-    const lines = fs.investment_plan.split("\n").filter(l =>
-      /entry|exit|price|target|stop|سعر|دخول|خروج|هدف|وقف|شراء|بيع|limit|order|point|مستوى/i.test(l)
-    );
-    if (lines.length > 0) entryText = lines.join("\n");
-  }
-  if (!entryText && fs?.final_trade_decision) {
-    const lines = fs.final_trade_decision.split("\n").filter(l =>
-      /entry|exit|price|target|stop|سعر|دخول|خروج|هدف|وقف|شراء|بيع|limit|order|point|مستوى/i.test(l)
-    );
-    if (lines.length > 0) entryText = lines.join("\n");
-  }
-  
-  if (entryText) {
-    html += `<div class="entry-card animate-slideUp">
-      <div class="entry-card-header"><span class="icon">🎯</span><div class="title">نقاط الدخول والخروج المقترحة</div></div>
-      <div style="font-size:12px;line-height:1.8;color:var(--text-secondary);white-space:pre-wrap">${escHtml(entryText)}</div>
+
+  // === DECISION BANNER ===
+  html += `
+    <div class="decision-banner ${actionClass}">
+      <div class="decision-emoji">${actionEmoji}</div>
+      <div class="decision-action">${actionAr}</div>
+      <div class="decision-subtitle">توصية نظام التحليل الذكي متعدد الوكلاء</div>
+      <div class="decision-badges">
+        <span class="decision-badge">📌 ${company}</span>
+        <span class="decision-badge">📅 ${date}</span>
+        <span class="decision-badge">💰 ${price}</span>
+      </div>
     </div>`;
-  }
-  
-  // === Final Decision Report ===
+
+  // === ENTRY ZONES ===
+  html += `
+    <div class="zones-grid">
+      <div class="zone-card buy">
+        <div class="zone-icon">📈</div>
+        <div class="zone-label">منطقة الدخول</div>
+        <div class="zone-value">${entryBuy}</div>
+      </div>
+      <div class="zone-card sell">
+        <div class="zone-icon">🛑</div>
+        <div class="zone-label">وقف الخسارة</div>
+        <div class="zone-value">${stopLoss}</div>
+      </div>
+      <div class="zone-card neutral">
+        <div class="zone-icon">🎯</div>
+        <div class="zone-label">الهدف</div>
+        <div class="zone-value">${takeProfit}</div>
+      </div>
+    </div>`;
+
+  // === FINAL TRADE DECISION ===
   if (fs?.final_trade_decision) {
-    html += `<div class="result-card animate-slideUp">
-      <div class="result-card-header" onclick="toggleCard(this)">
-        <div class="left">
-          <div class="icon" style="background:rgba(0,212,170,0.1);color:var(--accent-primary)">📋</div>
-          <div><div class="title">تقرير القرار النهائي</div><div class="subtitle">التحليل الشامل والتوصية</div></div>
-        </div>
-        <div class="toggle">▾</div>
-      </div>
-      <div class="result-card-body">${escHtml(fs.final_trade_decision)}</div>
-    </div>`;
+    html += buildReportCard("💡 التقرير والقرار النهائي", fs.final_trade_decision, "var(--grad-main)", true);
   }
-  
-  // === Agent Reports ===
-  if (fs) {
-    html += `<div style="margin:16px 0 12px;font-size:13px;font-weight:700;color:var(--text-secondary);display:flex;align-items:center;gap:8px">
-      <span style="width:4px;height:16px;border-radius:2px;background:var(--grad-primary);display:inline-block"></span>
-      🔬 تقارير المحللين الذكيين
-    </div>`;
-    
-    const agents = [
-      { key: "market_report", name: "المحلل الفني", role: "التحليل الفني والمؤشرات", icon: "📊", color: "#3b82f6", bg: "rgba(59,130,246,0.1)" },
-      { key: "sentiment_report", name: "محلل المعنويات", role: "تحليل المشاعر والاتجاهات", icon: "💬", color: "#8b5cf6", bg: "rgba(139,92,246,0.1)" },
-      { key: "news_report", name: "محلل الأخبار", role: "الأخبار الاقتصادية والأحداث", icon: "📰", color: "#06b6d4", bg: "rgba(6,182,212,0.1)" },
-      { key: "fundamentals_report", name: "المحلل الأساسي", role: "التحليل الأساسي والبيانات", icon: "📋", color: "#10b981", bg: "rgba(16,185,129,0.1)" },
-    ];
-    
-    html += `<div class="agent-report-grid">`;
-    agents.forEach((ag, i) => {
-      const content = fs[ag.key];
-      if (!content) return;
-      html += `<div class="agent-report-card animate-slideUp" style="animation-delay:${i * 0.1}s">
-        <div class="agent-report-header">
-          <div class="agent-report-avatar" style="background:${ag.bg};color:${ag.color}">${ag.icon}<div class="status-dot active"></div></div>
-          <div><div class="agent-report-name" style="color:${ag.color}">${ag.name}</div><div class="agent-report-role">${ag.role}</div></div>
-        </div>
-        <div class="agent-report-body">${escHtml(content)}</div>
-      </div>`;
-    });
-    html += `</div>`;
-  }
-  
-  // === Investment Debate ===
-  if (fs?.debate) {
-    html += `<div style="margin:16px 0 12px;font-size:13px;font-weight:700;color:var(--text-secondary);display:flex;align-items:center;gap:8px">
-      <span style="width:4px;height:16px;border-radius:2px;background:var(--grad-primary);display:inline-block"></span>
-      ⚔️ مناقشة الاستثمار (Bull vs Bear)
-    </div>`;
-    
-    html += `<div class="debate-section">`;
-    if (fs.debate.bull) {
-      html += `<div class="debate-card debate-bull animate-slideUp">
-        <div class="debate-header"><div class="debate-avatar">🐂</div><div><div class="debate-name">Bull (صاعد)</div><div class="debate-role">الاتجاه الصاعد</div></div></div>
-        <div class="debate-body">${escHtml(fs.debate.bull)}</div>
-      </div>`;
-    }
-    if (fs.debate.bear) {
-      html += `<div class="debate-card debate-bear animate-slideUp">
-        <div class="debate-header"><div class="debate-avatar">🐻</div><div><div class="debate-name">Bear (هابط)</div><div class="debate-role">الاتجاه الهابط</div></div></div>
-        <div class="debate-body">${escHtml(fs.debate.bear)}</div>
-      </div>`;
-    }
-    if (fs.debate.judge) {
-      html += `<div class="debate-card debate-judge animate-slideUp">
-        <div class="debate-header"><div class="debate-avatar">⚖️</div><div><div class="debate-name">حكم المناقشة</div><div class="debate-role">القرار النهائي</div></div></div>
-        <div class="debate-body">${escHtml(fs.debate.judge)}</div>
-      </div>`;
-    }
-    html += `</div>`;
-  }
-  
-  // === Risk Debate ===
-  if (fs?.risk_debate) {
-    html += `<div style="margin:16px 0 12px;font-size:13px;font-weight:700;color:var(--text-secondary);display:flex;align-items:center;gap:8px">
-      <span style="width:4px;height:16px;border-radius:2px;background:var(--grad-primary);display:inline-block"></span>
-      🛡️ تقييم المخاطر
-    </div>`;
-    
-    html += `<div class="debate-section">`;
-    if (fs.risk_debate.conservative) {
-      html += `<div class="debate-card risk-conservative animate-slideUp">
-        <div class="debate-header"><div class="debate-avatar">🔵</div><div><div class="debate-name">متحفظ</div><div class="debate-role">إدارة المخاطر المتحفظة</div></div></div>
-        <div class="debate-body">${escHtml(fs.risk_debate.conservative)}</div>
-      </div>`;
-    }
-    if (fs.risk_debate.neutral) {
-      html += `<div class="debate-card risk-neutral animate-slideUp">
-        <div class="debate-header"><div class="debate-avatar">🟣</div><div><div class="debate-name">محايد</div><div class="debate-role">تقييم محايد للمخاطر</div></div></div>
-        <div class="debate-body">${escHtml(fs.risk_debate.neutral)}</div>
-      </div>`;
-    }
-    if (fs.risk_debate.aggressive) {
-      html += `<div class="debate-card risk-aggressive animate-slideUp">
-        <div class="debate-header"><div class="debate-avatar">🔴</div><div><div class="debate-name">جريء</div><div class="debate-role">إدارة المخاطر الجريئة</div></div></div>
-        <div class="debate-body">${escHtml(fs.risk_debate.aggressive)}</div>
-      </div>`;
-    }
-    if (fs.risk_debate.judge) {
-      html += `<div class="debate-card debate-judge animate-slideUp">
-        <div class="debate-header"><div class="debate-avatar">⚖️</div><div><div class="debate-name">حكم المخاطر</div><div class="debate-role">القرار النهائي</div></div></div>
-        <div class="debate-body">${escHtml(fs.risk_debate.judge)}</div>
-      </div>`;
-    }
-    html += `</div>`;
-  }
-  
-  // === Plans ===
+
+  // === TRADER PLAN ===
   if (fs?.trader_investment_plan) {
-    html += `<div class="result-card animate-slideUp">
-      <div class="result-card-header" onclick="toggleCard(this)">
-        <div class="left">
-          <div class="icon" style="background:rgba(245,158,11,0.1);color:var(--warning)">💰</div>
-          <div><div class="title">خطة المتداول</div><div class="subtitle">نقاط الدخول والخروج</div></div>
-        </div>
-        <div class="toggle">▾</div>
-      </div>
-      <div class="result-card-body">${escHtml(fs.trader_investment_plan)}</div>
-    </div>`;
+    html += buildReportCard("💰 خطة المتداول", fs.trader_investment_plan, "var(--grad-hold)");
   }
+
+  // === INVESTMENT PLAN ===
   if (fs?.investment_plan) {
-    html += `<div class="result-card animate-slideUp">
-      <div class="result-card-header" onclick="toggleCard(this)">
-        <div class="left">
-          <div class="icon" style="background:rgba(0,212,170,0.1);color:var(--accent-primary)">📐</div>
-          <div><div class="title">خطة الاستثمار النهائية</div><div class="subtitle">الاستراتيجية المقترحة</div></div>
-        </div>
-        <div class="toggle">▾</div>
-      </div>
-      <div class="result-card-body">${escHtml(fs.investment_plan)}</div>
-    </div>`;
+    html += buildReportCard("📐 خطة الاستثمار", fs.investment_plan, "var(--grad-buy)");
   }
-  
-  // === Footer ===
+
+  // === AGENT REPORTS (TABS) ===
+  const agents = [
+    { key: "market_report", name: "📊 المحلل الفني", color: "#3b82f6" },
+    { key: "sentiment_report", name: "💬 محلل المعنويات", color: "#8b5cf6" },
+    { key: "news_report", name: "📰 محلل الأخبار", color: "#06b6d4" },
+    { key: "fundamentals_report", name: "📋 المحلل الأساسي", color: "#10b981" },
+  ];
+  const availableAgents = agents.filter(a => fs?.[a.key]);
+  if (availableAgents.length > 0) {
+    let tabs = "", panels = "";
+    availableAgents.forEach((a, i) => {
+      tabs += `<button class="agent-tab ${i === 0 ? 'active' : ''}" data-tab="${a.key}">${a.name}</button>`;
+      panels += `<div class="agent-tab-panel ${i === 0 ? 'active' : ''}" data-panel="${a.key}">${formatReport(fs[a.key])}</div>`;
+    });
+    html += `
+      <div class="agents-container">
+        <div class="agents-header"><h3>🔬 تقارير الوكلاء المتخصصين</h3></div>
+        <div class="agents-tabs">${tabs}</div>
+        ${panels}
+      </div>`;
+  }
+
+  // === DEBATE ===
+  if (fs?.debate) {
+    const debates = [
+      { key: "bull", name: "🐂 الرأي الصاعد (Bull)", color: "var(--success)" },
+      { key: "bear", name: "🐻 الرأي الهابط (Bear)", color: "var(--danger)" },
+      { key: "judge", name: "⚖️ قرار الحكم", color: "var(--accent)" },
+    ];
+    let debateHtml = "";
+    debates.forEach(d => {
+      if (!fs.debate[d.key]) return;
+      debateHtml += `
+        <div class="debate-card">
+          <div class="debate-card-header" style="color:${d.color}">${d.name}</div>
+          <div class="debate-card-body">${esc(fs.debate[d.key])}</div>
+        </div>`;
+    });
+    if (debateHtml) {
+      html += `
+        <div class="agents-container">
+          <div class="agents-header"><h3>⚔️ مناقشة المحللين</h3></div>
+          <div style="padding:20px">${debateHtml}</div>
+        </div>`;
+    }
+  }
+
+  // === RISK DEBATE ===
+  if (fs?.risk_debate) {
+    const risks = [
+      { key: "conservative", name: "🔵 المحلل المتحفظ", color: "var(--info)" },
+      { key: "neutral", name: "🟣 المحلل المحايد", color: "#a78bfa" },
+      { key: "aggressive", name: "🔴 المحلل الجريء", color: "var(--danger)" },
+      { key: "judge", name: "⚖️ قرار الحكم", color: "var(--accent)" },
+    ];
+    let riskHtml = "";
+    risks.forEach(r => {
+      if (!fs.risk_debate[r.key]) return;
+      riskHtml += `
+        <div class="debate-card">
+          <div class="debate-card-header" style="color:${r.color}">${r.name}</div>
+          <div class="debate-card-body">${esc(fs.risk_debate[r.key])}</div>
+        </div>`;
+    });
+    if (riskHtml) {
+      html += `
+        <div class="agents-container">
+          <div class="agents-header"><h3>🛡️ تقييم المخاطر</h3></div>
+          <div style="padding:20px">${riskHtml}</div>
+        </div>`;
+    }
+  }
+
+  // === FOOTER ===
   if (elapsed != null) {
     const m = Math.floor(elapsed / 60), s = Math.floor(elapsed % 60);
-    html += `<div class="result-footer">
-      <span class="badge">⏱️ ${m}:${String(s).padStart(2, "0")}</span>
-      <span class="badge">${company}</span>
-      <span class="badge">${date}</span>
-      <span class="badge">${selectedAgents.map(a => AGENTS[a]?.name || a).join(" · ")}</span>
-    </div>`;
+    html += `
+      <div class="result-footer">
+        <span class="footer-badge">⏱️ ${m}:${String(s).padStart(2, "0")}</span>
+        <span class="footer-badge">📌 ${company}</span>
+        <span class="footer-badge">📅 ${date}</span>
+        <span class="footer-badge">🤖 AI Multi-Agent</span>
+      </div>`;
   }
-  
-  resultsContent.innerHTML = html;
-  
-  // Expand first card by default
-  const firstCard = resultsContent.querySelector(".result-card");
-  if (firstCard) firstCard.classList.add("expanded");
+
+  resultsArea.innerHTML = html;
+  setupInteractions();
 }
 
-function toggleCard(header) {
-  const card = header.closest(".result-card");
-  card.classList.toggle("expanded");
+// ============================================
+// BUILD REPORT CARD
+// ============================================
+function buildReportCard(title, content, accentGrad, openByDefault = false) {
+  const id = "rpt_" + Math.random().toString(36).substr(2, 6);
+  return `
+    <div class="report-card ${openByDefault ? 'open' : ''}" id="${id}">
+      <div class="report-header" onclick="toggleReport('${id}')">
+        <div class="report-accent" style="background:${accentGrad}"></div>
+        <h3>${title}</h3>
+        <div class="report-toggle">▼</div>
+      </div>
+      <div class="report-body">
+        <div class="report-text">${formatReport(content)}</div>
+      </div>
+    </div>`;
 }
 
-function togglePanel() {
-  resultsPanel.classList.toggle("collapsed");
+function toggleReport(id) {
+  document.getElementById(id)?.classList.toggle("open");
 }
 
-function escHtml(t) {
-  if (!t) return "";
-  return String(t).replace(/[&<>"']/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : m === '>' ? '&gt;' : m === '"' ? '&quot;' : '&#039;');
+// ============================================
+// INTERACTIONS
+// ============================================
+function setupInteractions() {
+  // Agent tab switching
+  document.querySelectorAll(".agent-tab").forEach(tab => {
+    tab.addEventListener("click", () => {
+      const container = tab.closest(".agents-container");
+      container.querySelectorAll(".agent-tab").forEach(t => t.classList.remove("active"));
+      container.querySelectorAll(".agent-tab-panel").forEach(p => p.classList.remove("active"));
+      tab.classList.add("active");
+      const panel = container.querySelector(`[data-panel="${tab.dataset.tab}"]`);
+      if (panel) panel.classList.add("active");
+    });
+  });
 }
 
-// ============================================================
+// ============================================
 // KEYBOARD SHORTCUTS
-// ============================================================
-document.addEventListener("keydown", (e) => {
-  if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
+// ============================================
+document.addEventListener("keydown", e => {
+  if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+    e.preventDefault();
     analyzeBtn.click();
   }
   if (e.key === "/" && document.activeElement !== pairSearch) {
