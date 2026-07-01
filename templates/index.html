@@ -1236,6 +1236,226 @@ body::before {
   .hero-desc { font-size: 14px; }
   .analysis-card-title { font-size: 17px; }
 }
+/* --- Enhanced Trading Levels Grid (6 cards) --- */
+.zones-grid-enhanced {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-bottom: 24px;
+  animation: slideUp 0.6s var(--ease) 0.2s backwards;
+}
+.zone-card-enhanced {
+  border-radius: var(--radius);
+  padding: 20px 14px;
+  text-align: center;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+.zone-card-enhanced:hover { transform: translateY(-3px); }
+.zone-card-enhanced.entry {
+  background: linear-gradient(135deg, rgba(99,102,241,0.1), rgba(0,212,170,0.06));
+  border: 1px solid rgba(99,102,241,0.2);
+}
+.zone-card-enhanced.entry:hover { border-color: rgba(99,102,241,0.4); box-shadow: 0 8px 30px rgba(99,102,241,0.12); }
+.zone-card-enhanced.stoploss {
+  background: linear-gradient(135deg, rgba(239,68,68,0.1), rgba(249,115,22,0.05));
+  border: 1px solid rgba(239,68,68,0.2);
+}
+.zone-card-enhanced.stoploss:hover { border-color: rgba(239,68,68,0.4); box-shadow: 0 8px 30px rgba(239,68,68,0.12); }
+.zone-card-enhanced.tp1 {
+  background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(6,182,212,0.05));
+  border: 1px solid rgba(16,185,129,0.2);
+}
+.zone-card-enhanced.tp1:hover { border-color: rgba(16,185,129,0.4); box-shadow: 0 8px 30px rgba(16,185,129,0.12); }
+.zone-card-enhanced.tp2 {
+  background: linear-gradient(135deg, rgba(16,185,129,0.08), rgba(52,235,198,0.05));
+  border: 1px solid rgba(16,185,129,0.18);
+}
+.zone-card-enhanced.tp2:hover { border-color: rgba(16,185,129,0.35); box-shadow: 0 8px 25px rgba(16,185,129,0.1); }
+.zone-card-enhanced.tp3 {
+  background: linear-gradient(135deg, rgba(16,185,129,0.06), rgba(0,212,170,0.04));
+  border: 1px solid rgba(16,185,129,0.15);
+}
+.zone-card-enhanced.tp3:hover { border-color: rgba(16,185,129,0.3); box-shadow: 0 8px 25px rgba(16,185,129,0.08); }
+.zone-card-enhanced.rr {
+  background: linear-gradient(135deg, rgba(245,158,11,0.1), rgba(234,179,8,0.05));
+  border: 1px solid rgba(245,158,11,0.2);
+}
+.zone-card-enhanced.rr:hover { border-color: rgba(245,158,11,0.4); box-shadow: 0 8px 30px rgba(245,158,11,0.12); }
+.zone-card-enhanced .zone-icon { font-size: 28px; margin-bottom: 4px; }
+.zone-card-enhanced .zone-label { font-size: 10px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+.zone-card-enhanced .zone-value {
+  font-size: 17px;
+  font-weight: 800;
+  font-family: 'JetBrains Mono', monospace;
+  margin-top: 4px;
+}
+.zone-card-enhanced.entry .zone-value { color: var(--accent2); }
+.zone-card-enhanced.stoploss .zone-value { color: var(--danger); }
+.zone-card-enhanced.tp1 .zone-value { color: var(--success); }
+.zone-card-enhanced.tp2 .zone-value { color: #34ebc6; }
+.zone-card-enhanced.tp3 .zone-value { color: #06b6d4; }
+.zone-card-enhanced.rr .zone-value { color: var(--warning); }
+
+/* --- Confidence Meter --- */
+.confidence-section {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 24px;
+  margin-bottom: 24px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  animation: slideUp 0.5s var(--ease) 0.3s backwards;
+}
+.confidence-gauge {
+  position: relative;
+  width: 110px;
+  height: 110px;
+  flex-shrink: 0;
+}
+.confidence-gauge svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.confidence-gauge .gauge-track { fill: none; stroke: var(--border); stroke-width: 6; }
+.confidence-gauge .gauge-fill {
+  fill: none;
+  stroke-width: 6;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 1.5s cubic-bezier(0.4, 0, 0.2, 1), stroke 0.5s ease;
+}
+.confidence-gauge .gauge-pct {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 24px;
+  font-weight: 900;
+  font-family: 'JetBrains Mono', monospace;
+}
+.confidence-gauge .gauge-label {
+  position: absolute;
+  bottom: 12px; left: 50%;
+  transform: translateX(-50%);
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.confidence-details { flex: 1; }
+.confidence-details h4 {
+  font-size: 16px;
+  font-weight: 800;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.confidence-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.confidence-tag {
+  padding: 5px 14px;
+  border-radius: var(--radius-full);
+  font-size: 11px;
+  font-weight: 700;
+  border: 1px solid var(--border);
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.confidence-tag.direction {
+  border-color: rgba(0,212,170,0.25);
+  background: rgba(0,212,170,0.08);
+  color: var(--accent);
+}
+.confidence-tag.timeframe {
+  border-color: rgba(99,102,241,0.25);
+  background: rgba(99,102,241,0.08);
+  color: var(--accent2);
+}
+.confidence-tag.strength {
+  border-color: rgba(245,158,11,0.25);
+  background: rgba(245,158,11,0.08);
+  color: var(--accent3);
+}
+
+/* --- Entry Conditions Card --- */
+.entry-conditions-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  margin-bottom: 24px;
+  animation: slideUp 0.5s var(--ease) 0.35s backwards;
+}
+.entry-conditions-card h4 {
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-primary);
+}
+.entry-conditions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.entry-condition-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 14px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+.entry-condition-item .cond-icon {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+}
+.entry-condition-item.confirm .cond-icon {
+  background: rgba(16,185,129,0.15);
+  border: 1px solid rgba(16,185,129,0.3);
+  color: var(--success);
+}
+.entry-condition-item.invalidation {
+  border-color: rgba(239,68,68,0.2);
+  background: rgba(239,68,68,0.04);
+}
+.entry-condition-item.invalidation .cond-icon {
+  background: rgba(239,68,68,0.15);
+  border: 1px solid rgba(239,68,68,0.3);
+  color: var(--danger);
+}
+
+@media (max-width: 768px) {
+  .zones-grid-enhanced { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .confidence-section { flex-direction: column; text-align: center; }
+  .confidence-gauge { width: 90px; height: 90px; }
+  .confidence-gauge .gauge-pct { font-size: 20px; }
+  .confidence-meta { justify-content: center; }
+}
+@media (max-width: 480px) {
+  .zones-grid-enhanced { grid-template-columns: repeat(2, 1fr); }
+}
 </style>
 </head>
 <body>
@@ -1812,18 +2032,15 @@ function renderResults(result, elapsed) {
   const date = result.trade_date || "";
   const price = fs?.current_price || "—";
 
-  // Extract entry/exit prices
-  let entryBuy = "—", entrySell = "—", stopLoss = "—", takeProfit = "—";
-  // Extract entry/exit prices
+  // Extract entry/exit prices (fallback when server-side extraction is unavailable)
+  let entryBuy = "—", stopLoss = "—", takeProfit = "—";
   const planText = fs?.summary_decision || fs?.trader_investment_plan || fs?.investment_plan || fs?.final_trade_decision || "";
   if (planText) {
-    const e = findPrice(planText, ["entry", "دخول", "شراء", "buy"]);
+    const e = findPrice(planText, ["entry", "دخول", "شراء", "buy", "منطقة الدخول", "سعر الدخول"]);
     if (e !== "—") entryBuy = e;
-    const ex = findPrice(planText, ["exit", "خروج", "بيع", "sell", "target", "هدف"]);
-    if (ex !== "—") entrySell = ex;
-    const sl = findPrice(planText, ["stop", "وقف", "stop loss"]);
+    const sl = findPrice(planText, ["stop", "وقف", "stop loss", "وقف الخسارة"]);
     if (sl !== "—") stopLoss = sl;
-    const tp = findPrice(planText, ["target", "profit", "هدف", "ربح", "take profit"]);
+    const tp = findPrice(planText, ["target", "profit", "هدف", "ربح", "take profit", "الهدف الأول", "tp1"]);
     if (tp !== "—") takeProfit = tp;
   }
 
@@ -1842,25 +2059,107 @@ function renderResults(result, elapsed) {
       </div>
     </div>`;
 
-  // === ENTRY ZONES ===
+  // === ENHANCED TRADING LEVELS (6 cards) ===
+  const tl = fs?.trading_levels || {};
+  const tlEntry = tl.entry || entryBuy;
+  const tlSL = tl.stop_loss || stopLoss;
+  const tlTP1 = tl.tp1 || takeProfit;
+  const tlTP2 = tl.tp2 || "—";
+  const tlTP3 = tl.tp3 || "—";
+  const tlRR = tl.rr_ratio || "—";
+  const tlConfidence = tl.confidence || "—";
+  const tlConfidenceNum = tl.confidence_num || 0;
+  const tlSignal = tl.signal_strength || "—";
+  const tlTimeframe = tl.timeframe || "—";
+  const tlDirection = tl.direction || "—";
+  const tlConditions = tl.entry_conditions || [];
+  const tlInvalidation = tl.invalidation || "—";
+
   html += `
-    <div class="zones-grid">
-      <div class="zone-card buy">
-        <div class="zone-icon">📈</div>
+    <div class="zones-grid-enhanced">
+      <div class="zone-card-enhanced entry">
+        <div class="zone-icon">📍</div>
         <div class="zone-label">منطقة الدخول</div>
-        <div class="zone-value">${entryBuy}</div>
+        <div class="zone-value">${tlEntry}</div>
       </div>
-      <div class="zone-card sell">
+      <div class="zone-card-enhanced stoploss">
         <div class="zone-icon">🛑</div>
         <div class="zone-label">وقف الخسارة</div>
-        <div class="zone-value">${stopLoss}</div>
+        <div class="zone-value">${tlSL}</div>
       </div>
-      <div class="zone-card neutral">
+      <div class="zone-card-enhanced tp1">
         <div class="zone-icon">🎯</div>
-        <div class="zone-label">الهدف</div>
-        <div class="zone-value">${takeProfit}</div>
+        <div class="zone-label">الهدف الأول</div>
+        <div class="zone-value">${tlTP1}</div>
+      </div>
+      <div class="zone-card-enhanced tp2">
+        <div class="zone-icon">🎯</div>
+        <div class="zone-label">الهدف الثاني</div>
+        <div class="zone-value">${tlTP2}</div>
+      </div>
+      <div class="zone-card-enhanced tp3">
+        <div class="zone-icon">🏆</div>
+        <div class="zone-label">الهدف الثالث</div>
+        <div class="zone-value">${tlTP3}</div>
+      </div>
+      <div class="zone-card-enhanced rr">
+        <div class="zone-icon">⚖️</div>
+        <div class="zone-label">مخاطرة / عائد</div>
+        <div class="zone-value">${tlRR}</div>
       </div>
     </div>`;
+
+  // === CONFIDENCE METER ===
+  const confR = 46, confCirc = 2 * Math.PI * confR;
+  const confOff = confCirc - (tlConfidenceNum / 100) * confCirc;
+  const confColor = tlConfidenceNum >= 70 ? 'var(--success)' : tlConfidenceNum >= 50 ? 'var(--warning)' : 'var(--danger)';
+
+  html += `
+    <div class="confidence-section">
+      <div class="confidence-gauge">
+        <svg viewBox="0 0 100 100">
+          <circle class="gauge-track" cx="50" cy="50" r="${confR}"/>
+          <circle class="gauge-fill" cx="50" cy="50" r="${confR}" stroke="${confColor}" stroke-dasharray="${confCirc}" stroke-dashoffset="${confOff}" filter="drop-shadow(0 0 6px ${confColor})"/>
+        </svg>
+        <div class="gauge-pct" style="color:${confColor}">${tlConfidenceNum}%</div>
+        <div class="gauge-label">نسبة الثقة</div>
+      </div>
+      <div class="confidence-details">
+        <h4>📊 تقييم جودة الإشارة</h4>
+        <div class="confidence-meta">
+          ${tlDirection !== '—' ? `<span class="confidence-tag direction">${tlDirection}</span>` : ''}
+          ${tlTimeframe !== '—' ? `<span class="confidence-tag timeframe">⏱️ ${tlTimeframe}</span>` : ''}
+          ${tlSignal !== '—' ? `<span class="confidence-tag strength">💪 ${tlSignal}</span>` : ''}
+          <span class="confidence-tag">📈 R:R ${tlRR}</span>
+        </div>
+      </div>
+    </div>`;
+
+  // === ENTRY CONDITIONS ===
+  if (tlConditions.length > 0 || tlInvalidation !== '—') {
+    let conditionsHtml = '';
+    tlConditions.forEach(c => {
+      conditionsHtml += `
+        <div class="entry-condition-item confirm">
+          <div class="cond-icon">✓</div>
+          <span>${esc(c)}</span>
+        </div>`;
+    });
+    if (tlInvalidation !== '—') {
+      conditionsHtml += `
+        <div class="entry-condition-item invalidation">
+          <div class="cond-icon">✕</div>
+          <span>⚠️ إبطال الصفقة: ${esc(tlInvalidation)}</span>
+        </div>`;
+    }
+    html += `
+      <div class="entry-conditions-card">
+        <h4>✅ شروط الدخول المثالية</h4>
+        <div class="entry-conditions-list">
+          ${conditionsHtml}
+        </div>
+      </div>`;
+  }
 
   // === CONCISE SUMMARY ===
   if (fs?.summary_decision) {

@@ -229,24 +229,53 @@ def _translate_text(text: str, max_retries: int = 2) -> str:
     return text
 
 
-SUMMARY_SYSTEM_PROMPT = """أنت خبير ومحلل مالي محترف ومتداول متمرس. قم بتلخيص وإعادة صياغة تقرير التحليل المالي التالي للرمز {ticker} بالكامل ليكون ملخصاً قصيراً ومختصراً ولكن مفيداً للغاية وعالي القيمة للمتداول.
+SUMMARY_SYSTEM_PROMPT = """أنت محلل مالي محترف ومتداول خبير بخبرة تزيد عن 15 سنة في الأسواق المالية. قم بتحليل تقرير التحليل المالي التالي للرمز {ticker} وإنتاج ملخص تداول احترافي عالي الدقة.
 
-يجب أن يحتوي الملخص بدقة على الأقسام التالية باللغة العربية الفصحى وبتنسيق Markdown واضح ومباشر:
+يجب أن يحتوي الملخص بدقة على الأقسام التالية باللغة العربية الفصحى وبتنسيق Markdown:
 
-1. 🎯 **التوصية والاتجاه**: (شراء صريح / بيع صريح / انتظار ومراقبة - مع كتابة جملة واحدة توضح السبب الرئيسي).
-2. 💰 **مستويات التداول الحقيقية**:
-   - **سعر الدخول الحقيقي المقترح**: [ابحث واستخرج السعر الدقيق أو النطاق المقترح للدخول من التقرير]
-   - **وقف الخسارة (Stop Loss)**: [ابحث واستخرج السعر الدقيق المقترح لوقف الخسارة]
-   - **الهدف الأول (Take Profit 1)**: [الهدف الأول المقترح]
-   - **الهدف الثاني (Take Profit 2)**: [الهدف الثاني المقترح إن وجد]
-3. 🔬 **أهم أسباب القرار (نقاط سريعة وموجزة)**:
-   - [اكتب 3 نقاط رصاصية سريعة تلخص أهم العوامل الفنية مثل RSI/MACD/المتوسطات]
-   - [اكتب نقطة رصاصية سريعة تلخص المعنويات والأخبار الحالية المؤثرة]
+## 🎯 التوصية والاتجاه
+- **التوصية**: (شراء قوي ✅ / شراء ✅ / انتظار ومراقبة ⏸️ / بيع 🔴 / بيع قوي 🔴🔴)
+- **الاتجاه العام**: (صاعد / هابط / عرضي)
+- **الإطار الزمني**: (سكالبينج / يومي / سوينج / متوسط المدى)
+- **جملة واحدة توضح السبب الرئيسي للتوصية**
 
-قواعد صارمة:
-- استخرج مستويات التداول الحقيقية (الدخول، وقف الخسارة، جني الأرباح) بدقة من نص التقرير المالي.
-- إذا لم يذكر التقرير أسعاراً رقمية صريحة، قم بتحديدها بناءً على أقرب مستويات الدعم والمقاومة أو السعر الحالي المذكور في التقرير بطريقة منطقية ومفيدة للمتداول.
-- لا تكتب مقدمات أو عبارات ترحيبية أو تعليقات جانبية. ابدأ مباشرة بالقسم الأول.
+## 📊 نسبة الثقة
+- **نسبة الثقة**: [رقم من 0 إلى 100]%
+- **تقييم قوة الإشارة**: (ضعيفة / متوسطة / قوية / قوية جداً)
+- **عدد المؤشرات المتوافقة**: [عدد] من [إجمالي] مؤشر
+- يجب أن تكون نسبة الثقة مبنية على توافق المؤشرات الفنية + الأساسية + المعنويات + الأخبار. إذا تتوافق 3 من 4 عوامل = 75%، إذا تتوافق كل العوامل = 85-95%، إذا عاملين فقط = 50-65%.
+
+## 💰 مستويات التداول الدقيقة
+- **سعر الدخول المقترح**: [السعر الدقيق أو نطاق ضيق]
+- **وقف الخسارة (Stop Loss)**: [السعر الدقيق] — [المسافة بالنقاط والنسبة المئوية من الدخول]
+- **الهدف الأول (TP1)**: [السعر] — [المسافة بالنقاط والنسبة المئوية]
+- **الهدف الثاني (TP2)**: [السعر] — [المسافة بالنقاط والنسبة المئوية]
+- **الهدف الثالث (TP3)**: [السعر] — [المسافة بالنقاط والنسبة المئوية]
+- **نسبة المخاطرة إلى العائد (R:R)**: [النسبة بناءً على TP2 / المسافة لوقف الخسارة]
+
+## 🔬 التحليل الفني المتعدد الأطر الزمنية
+- **الإطار اليومي (D1)**: [اتجاه + أهم مستوى دعم ومقاومة]
+- **إطار 4 ساعات (H4)**: [اتجاه + إشارات]
+- **إطار الساعة (H1)**: [اتجاه + نقطة الدخول المحتملة]
+- **المؤشرات الرئيسية**: RSI=[قيمة] | MACD=[إشارة] | المتوسطات المتحركة=[اتجاه]
+
+## ✅ شروط الدخول المثالية
+- [شرط 1 يجب تحققه قبل الدخول]
+- [شرط 2 يجب تحققه قبل الدخول]
+- [شرط 3 يجب تحققه قبل الدخول]
+- **شرط إبطال الصفقة**: [ما الذي يُبطل هذا التحليل بالكامل]
+
+## 📰 أهم العوامل المؤثرة
+- [نقطة 1: عامل فني أو أساسي مؤثر]
+- [نقطة 2: خبر أو حدث اقتصادي مؤثر]
+- [نقطة 3: معنويات السوق]
+
+قواعد صارمة وحاسمة:
+- استخرج مستويات التداول (الدخول، وقف الخسارة، الأهداف) بدقة من نص التقرير. إذا لم تُذكر صراحةً، احسبها بناءً على أقرب مستويات الدعم والمقاومة والسعر الحالي.
+- نسبة الثقة يجب أن تكون رقماً محدداً (مثل 78%) وليست نطاقاً.
+- نسبة R:R يجب أن تكون محسوبة فعلياً (مثل 1:2.5).
+- لا تكتب مقدمات أو ترحيبات. ابدأ مباشرة.
+- الأرقام يجب أن تكون واقعية ومنطقية بناءً على تحركات السعر الفعلية.
 """
 
 def _summarize_and_format_report(text: str, ticker: str) -> str:
@@ -334,6 +363,133 @@ def _summarize_and_format_report(text: str, ticker: str) -> str:
     return text
 
 
+def _extract_trading_levels(summary_text: str) -> dict:
+    """Extract structured trading levels from the Arabic summary report."""
+    import re
+    levels = {
+        "entry": "—",
+        "stop_loss": "—",
+        "tp1": "—",
+        "tp2": "—",
+        "tp3": "—",
+        "rr_ratio": "—",
+        "confidence": "—",
+        "confidence_num": 0,
+        "signal_strength": "—",
+        "timeframe": "—",
+        "direction": "—",
+        "entry_conditions": [],
+        "invalidation": "—",
+    }
+    if not summary_text:
+        return levels
+
+    lines = summary_text.split("\n")
+    for line in lines:
+        line_lower = line.strip()
+        
+        # Extract entry price
+        if any(k in line_lower for k in ["سعر الدخول", "entry", "منطقة الدخول"]):
+            nums = re.findall(r'\d+[\.,]?\d*', line_lower)
+            if nums:
+                levels["entry"] = nums[0].replace(',', '.')
+        
+        # Extract stop loss
+        if any(k in line_lower for k in ["وقف الخسارة", "stop loss", "stop_loss"]):
+            nums = re.findall(r'\d+[\.,]?\d*', line_lower)
+            if nums:
+                levels["stop_loss"] = nums[0].replace(',', '.')
+        
+        # Extract TP1
+        if any(k in line_lower for k in ["الهدف الأول", "tp1", "take profit 1"]):
+            nums = re.findall(r'\d+[\.,]?\d*', line_lower)
+            if nums:
+                levels["tp1"] = nums[0].replace(',', '.')
+        
+        # Extract TP2
+        if any(k in line_lower for k in ["الهدف الثاني", "tp2", "take profit 2"]):
+            nums = re.findall(r'\d+[\.,]?\d*', line_lower)
+            if nums:
+                levels["tp2"] = nums[0].replace(',', '.')
+        
+        # Extract TP3
+        if any(k in line_lower for k in ["الهدف الثالث", "tp3", "take profit 3"]):
+            nums = re.findall(r'\d+[\.,]?\d*', line_lower)
+            if nums:
+                levels["tp3"] = nums[0].replace(',', '.')
+        
+        # Extract R:R ratio
+        if any(k in line_lower for k in ["مخاطرة", "r:r", "r/r", "risk", "عائد"]):
+            rr_match = re.findall(r'1\s*[:/]\s*(\d+[\.,]?\d*)', line_lower)
+            if rr_match:
+                levels["rr_ratio"] = f"1:{rr_match[0].replace(',', '.')}"
+            else:
+                nums = re.findall(r'\d+[\.,]?\d*', line_lower)
+                if len(nums) >= 2:
+                    levels["rr_ratio"] = f"1:{nums[-1].replace(',', '.')}"
+        
+        # Extract confidence
+        if any(k in line_lower for k in ["نسبة الثقة", "confidence", "الثقة"]):
+            pct_match = re.findall(r'(\d+)\s*%', line_lower)
+            if pct_match:
+                levels["confidence"] = f"{pct_match[0]}%"
+                levels["confidence_num"] = int(pct_match[0])
+        
+        # Extract signal strength
+        if any(k in line_lower for k in ["قوة الإشارة", "signal"]):
+            if "قوية جداً" in line_lower or "very strong" in line_lower.lower():
+                levels["signal_strength"] = "قوية جداً"
+            elif "قوية" in line_lower or "strong" in line_lower.lower():
+                levels["signal_strength"] = "قوية"
+            elif "متوسطة" in line_lower or "medium" in line_lower.lower():
+                levels["signal_strength"] = "متوسطة"
+            elif "ضعيفة" in line_lower or "weak" in line_lower.lower():
+                levels["signal_strength"] = "ضعيفة"
+        
+        # Extract timeframe
+        if any(k in line_lower for k in ["الإطار الزمني", "timeframe"]):
+            if "سكالبينج" in line_lower or "scalp" in line_lower.lower():
+                levels["timeframe"] = "سكالبينج"
+            elif "يومي" in line_lower or "daily" in line_lower.lower() or "intraday" in line_lower.lower():
+                levels["timeframe"] = "يومي"
+            elif "سوينج" in line_lower or "swing" in line_lower.lower():
+                levels["timeframe"] = "سوينج"
+            elif "متوسط" in line_lower or "medium" in line_lower.lower():
+                levels["timeframe"] = "متوسط المدى"
+        
+        # Extract direction
+        if any(k in line_lower for k in ["الاتجاه العام", "direction", "الاتجاه"]):
+            if "صاعد" in line_lower or "bullish" in line_lower.lower():
+                levels["direction"] = "صاعد 📈"
+            elif "هابط" in line_lower or "bearish" in line_lower.lower():
+                levels["direction"] = "هابط 📉"
+            elif "عرضي" in line_lower or "sideways" in line_lower.lower():
+                levels["direction"] = "عرضي ↔️"
+        
+        # Extract entry conditions
+        if any(k in line_lower for k in ["شروط الدخول", "entry condition"]):
+            # Start collecting conditions from next lines
+            pass
+        if line_lower.startswith("- ") and any(k in line_lower for k in ["كسر", "اختراق", "ارتداد", "تأكيد", "إغلاق", "يجب"]):
+            condition = line_lower.lstrip("- ").strip()
+            if condition and len(condition) > 5:
+                levels["entry_conditions"].append(condition)
+        
+        # Extract invalidation
+        if any(k in line_lower for k in ["إبطال", "invalidat"]):
+            invalidation_text = line_lower
+            for prefix in ["**شرط إبطال الصفقة**:", "شرط إبطال الصفقة:", "- "]:
+                invalidation_text = invalidation_text.replace(prefix, "")
+            invalidation_text = invalidation_text.strip().strip("*").strip()
+            if invalidation_text and len(invalidation_text) > 5:
+                levels["invalidation"] = invalidation_text
+    
+    # Limit entry conditions to 4
+    levels["entry_conditions"] = levels["entry_conditions"][:4]
+    
+    return levels
+
+
 def _translate_results(result: dict, task_id: str) -> dict:
     """Translate all report fields in the result to Arabic."""
     if not result or "final_state" not in result:
@@ -352,6 +508,15 @@ def _translate_results(result: dict, task_id: str) -> dict:
         except Exception as se:
             print(f"[{task_id}] WARNING: Summary generation failed: {se}")
             fs["summary_decision"] = ""
+    
+    # Extract structured trading levels from the summary
+    try:
+        trading_levels = _extract_trading_levels(fs.get("summary_decision", ""))
+        fs["trading_levels"] = trading_levels
+        print(f"[{task_id}] ✓ Trading levels extracted: confidence={trading_levels.get('confidence', '—')}")
+    except Exception as tle:
+        print(f"[{task_id}] WARNING: Trading levels extraction failed: {tle}")
+        fs["trading_levels"] = {}
 
     # Fields to translate
     text_fields = [
@@ -446,6 +611,7 @@ def _run_task(task_id: str, ticker: str, llm_provider: str, trade_date: str, age
                 "investment_plan": _safe_get(filtered_state, "investment_plan"),
                 "final_trade_decision": _safe_get(filtered_state, "final_trade_decision"),
                 "summary_decision": "",  # Will be generated during processing
+                "trading_levels": {},  # Will be extracted during processing
                 "current_price": _safe_nested(filtered_state, "instrument_context", "price"),
                 "debate": {
                     "bull": _safe_nested(filtered_state, "investment_debate_state", "bull_history"),
