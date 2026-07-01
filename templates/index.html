@@ -1479,7 +1479,8 @@ body::before {
     </div>
   </div>
   <div class="header-actions">
-    <a class="nav-link active" onclick="scrollToSection('analysisSection')">التحليل</a>
+    <a class="nav-link active" href="/">التحليل الفردي</a>
+    <a class="nav-link" href="/recommendations">توصيات السكالبينج</a>
     <a class="nav-link" onclick="scrollToSection('stagesSection')">كيف يعمل</a>
     <div class="header-badge">
       <span class="dot"></span>
@@ -2453,6 +2454,19 @@ document.addEventListener("keydown", e => {
 populatePairs();
 setSpeedMode('quick');
 pairSearch.addEventListener("input", e => populatePairs(e.target.value));
+
+// URL query parameters check
+const urlParams = new URLSearchParams(window.location.search);
+const urlTicker = urlParams.get('ticker');
+if (urlTicker) {
+  tickerSelect.value = urlTicker;
+  const autoAnalyze = urlParams.get('analyze');
+  if (autoAnalyze === 'true') {
+    setTimeout(() => {
+      analyzeBtn.click();
+    }, 500);
+  }
+}
 </script>
 </body>
 </html>
